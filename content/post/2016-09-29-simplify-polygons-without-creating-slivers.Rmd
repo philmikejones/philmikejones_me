@@ -13,6 +13,86 @@ tags:
   - simplify
 ---
 
+```{r setup, include=FALSE}
+library("tidyverse")
+library("sf")
+library("ggplot2")
+library("rmapshaper")
+library("pryr")
+
+post_dir = "2016-09-29-simplify-polygons-without-creating-slivers/"
+dir.create(post_dir, showWarnings = FALSE)
+```
+
+```{r prep-images, include=FALSE}
+if (!file.exists("../../static/img/rgn_simplify.png")) {
+  
+  tmp_dir = tempdir()
+  tmp = tempfile(pattern = "", tmpdir = tmp_dir, fileext = ".zip")
+  
+  download.file(
+    paste0(
+      "https://borders.ukdataservice.ac.uk/ukborders/easy_download/",
+      "prebuilt/shape/infuse_rgn_2011.zip"),
+    destfile = tmp)
+  
+  unzip(tmp, exdir = tmp_dir)
+  
+  rgn      = read_sf(tmp_dir, "infuse_rgn_2011")
+  rgn_simp = ms_simplify(rgn, keep = 0.01)
+  
+  rgn$simp      = "Unsimplified"
+  rgn_simp$simp = "Simplified"
+  
+  
+  if (!file.exists(paste0(post_dir, "rgn_sizes.rds"))) {
+  
+    rgn_size      = pryr::object_size(rgn)
+    rgn_simp_size = pryr::object_size(rgn_simp)
+    
+    saveRDS(
+      c(rgn_size, rgn_simp_size),
+      paste0(post_dir, "rgn_sizes.rds"))
+  
+  }
+      
+  stopifnot(
+    all.equal(colnames(rgn), colnames(rgn_simp))
+  )
+  
+  rgn = reduce(list(rgn, rgn_simp), rbind)
+  
+  ggplot(rgn) +
+    geom_sf() +
+    theme_bw() + 
+    facet_wrap( ~ simp)
+  ggsave(
+    "rgn_simplify.png", path = "../../static/img",
+    dpi = "screen", units = "in", width = 10)
+
+  unlink(c(tmp, tmp_dir))
+  
+}
+```
+
+```{r file-sizes, include=FALSE}
+rgn_sizes = readRDS(paste0(post_dir, "rgn_sizes.rds"))
+```
+
+When you download geographical data the polygons are often highly detailed, leading to large file sizes and slow processing times.
+Often this detail is unnecessary if you're not intending to produce small--scale maps.
+Most thematic maps, for example, tend to compare large geographies such as nations or regions, so the detail is unnecessary.
+Likewise, if you're producing your map for use on the web, for example as an interactive visualisation, too much detail can slow the rendering and responsiveness of your app.
+
+Compare the following two plots:
+
+```{r compare-unsimp-simp, include=TRUE, echo=FALSE}
+knitr::include_graphics("../../img/rgn_simplify.png")
+```
+
+It's practically impossible to tell the difference between the two at this scale, which would be perfectly practical for a web visualisation.
+The unsimplified file on the left is `r format(rgn_sizes[1] / 1024 / 1024, digits = 2)`MB, while the simplified image on the right is only `r format(rgn_sizes[2] / 1024 / 1024, digits = 2)`MB!
+
 When simplifying polygons it's almost inevitable that you will generate some sliver polygons or gaps between the correct polygons. For example, the following image shows two adjoining complex polygons, representing two adjoining administrative areas. Note there are no gaps between the polygons; they are contiguous (the border is between Sheffield and Barnsley LADs, by the way).<figure id="attachment_1996" class="thumbnail wp-caption aligncenter" style="width: 658px">
 
 [<img class="wp-image-1996 size-large" src="https://i2.wp.com/philmikejones.me/wp-content/uploads/2016/09/polygons_unsimplified-1024x639.png?fit=648%2C404" alt="Unsimplified polygons" srcset="https://i0.wp.com/philmikejones.me/wp-content/uploads/2016/09/polygons_unsimplified.png?resize=1024%2C639 1024w, https://i1.wp.com/philmikejones.me/wp-content/uploads/2016/09/polygons_unsimplified.png?resize=300%2C187 300w, https://i0.wp.com/philmikejones.me/wp-content/uploads/2016/09/polygons_unsimplified.png?resize=768%2C479 768w, https://i1.wp.com/philmikejones.me/wp-content/uploads/2016/09/polygons_unsimplified.png?w=1509 1509w, https://i0.wp.com/philmikejones.me/wp-content/uploads/2016/09/polygons_unsimplified.png?w=1296 1296w" sizes="(max-width: 648px) 100vw, 648px" data-recalc-dims="1" />](https://i1.wp.com/philmikejones.me/wp-content/uploads/2016/09/polygons_unsimplified.png)<figcaption class="caption wp-caption-text">Original geometries without simplification</figcaption></figure> 
