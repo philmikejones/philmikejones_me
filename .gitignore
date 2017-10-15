@@ -3,6 +3,3 @@
 .RData
 .Ruserdata
 public/
-
-# Compiled
-content/*/*.html
