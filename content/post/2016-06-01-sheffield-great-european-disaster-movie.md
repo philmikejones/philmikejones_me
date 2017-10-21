@@ -15,9 +15,10 @@ On Monday 9th May ([Europe Day](https://en.wikipedia.org/wiki/Europe_Day)) the [
 
 The movie:
 
-> &#8230;examines the identity crisis of current-day Europe and the complex challenges that are mounting against the Union's survival. Beset by growing nationalism, seven years of economic crisis [as of 2014] and an increasing dissatisfaction with its undemocratic political structure will Europe sleepwalk into catastrophe as it did one hundred years ago? &#8211; <http://www.thegreateuropeandisastermovie.eu/about>
+> examines the identity crisis of current-day Europe and the complex challenges that are mounting against the Union's survival. Beset by growing nationalism, seven years of economic crisis [as of 2014] and an increasing dissatisfaction with its undemocratic political structure will Europe sleepwalk into catastrophe as it did one hundred years ago? <http://www.thegreateuropeandisastermovie.eu/about>
 
-I wanted to screen the film to raise awareness of the benefits of the European Union, especially in the lead up to the [EU Referendum](https://www.eureferendum.gov.uk/) in the UK on 23 June. I firmly wish for the UK to remain in the EU &#8211; despite its problems &#8211; and worry that if the UK leaves my young son and his generation will grow up in a nation cast out from the world like a political pariah, without the benefits and social safeguards that we have enjoyed up to now.
+I wanted to screen the film to raise awareness of the benefits of the European Union, especially in the lead up to the [EU Referendum](https://www.eureferendum.gov.uk/) in the UK on 23 June.
+I firmly wish for the UK to remain in the EU - despite its problems - and worry that if the UK leaves my young son and his generation will grow up in a nation cast out from the world like a political pariah, without the benefits and social safeguards that we have enjoyed up to now.
 
 The movie has a fictional narrative that runs through the film which introduces key concepts and serves as a launching point for relevant documentary footage.
 
@@ -41,5 +42,3 @@ Do you feel European?
 Overall, as I tried to wrap up, I felt hopeful that there were people who felt the European Union was worth saving, both as a political institution and as a sharing of cultures and ideals. We recognised that some things in the European Union did need to change and there were numerous challenges to the future of the European Union, not least the forthcoming referendum in the UK. But most of us felt like we had a European or even global identity alongside our national and regional identities. I think the strength of the European Union lies in its multiple national cultures working together, building something that is stronger and better as a result of that diversity.
 
 You can [stream The Great European Disaster Movie](https://vimeo.com/ondemand/thegreateuropeandisaster) if you want to watch it for yourself, or find out more [#WakeUpEurope](http://www.wakeupeurope.eu/), the movement behind the documentary, including [screenings and other events](http://www.wakeupeurope.eu/events).
-
-Featured image: _[EU Flagga](https://www.flickr.com/photos/mpd01605/6755068753)_ by MPD01605 used under CC BY-SA license.
