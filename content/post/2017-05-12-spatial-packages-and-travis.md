@@ -33,7 +33,7 @@ before_install:
   - "docker pull ubuntu:16.04"
   - sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable -y
   - sudo apt-get --yes --force-yes update -qq
-  - sudo apt-get install libgdal-dev libgeos-dev libproj-dev libudunits2-dev libv8-dev
+  - sudo apt-get install libgdal-dev libgeos-dev libproj-dev libudunits2-dev libv8-dev libprotobuf-dev protobuf-compiler libjq-dev
 
 r_packages:
   - sp
