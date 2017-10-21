@@ -1,0 +1,9 @@
+---
+title: "Doncaster Festival of Research"
+date: 2017-10-21
+slug: "2017-10-21-doncaster-festival-of-research"
+tags: []
+categories: [PhD]
+---
+
+![Doncaster Festival of Research 2017](../../img/doncaster-festival-of-research.jpeg)
