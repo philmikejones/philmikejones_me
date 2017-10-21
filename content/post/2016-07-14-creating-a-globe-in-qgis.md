@@ -29,4 +29,4 @@ Replacing `x` and `y` with your latitude and longitude (NOT longitude and latitu
 
 The result is a beautiful globe when appropriately styled:
 
-![World map globe projection](../img/globe.png)
+![World map globe projection](../../img/globe.png)
