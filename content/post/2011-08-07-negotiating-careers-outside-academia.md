@@ -8,8 +8,7 @@ categories:
 
 For the [British Sociological Association](http://www.britsoc.co.uk/about/About.htm)'s 60<sup>th</sup> annual conference at LSE in April, I volunteered to present at the Postgraduate Forum on life as an early career sociologist working outside academia. In it, I shared a brief summary of my career history to date, and offered a few hints and tips that I've picked up along the way that I hoped would prove useful for postgraduate students thinking about leaving academia. I've reproduced my presentation here, along with notes for further detail.
 
-[gigya src=&#8221;http://prezi.com/bin/preziloader.swf&#8221; type=&#8221;application/x-shockwave-flash&#8221; allowfullscreen=&#8221;true&#8221; allowscriptaccess=&#8221;always&#8221; width=&#8221;500&#8243; height=&#8221;363&#8243; bgcolor=&#8221;#ffffff&#8221; flashvars=&#8221;prezi\_id=7xzzs7jfo1m\_&lock\_to\_path=0&color=ffffff&autoplay=no&autohide_ctrls=0&#8243;]
-
+<iframe id="iframe_container" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen="" src="https://prezi.com/embed/7xzzs7jfo1m_/?bgcolor=ffffff&amp;lock_to_path=1&amp;autoplay=0&amp;autohide_ctrls=0&amp;landing_data=bHVZZmNaNDBIWnNjdEVENDRhZDFNZGNIUE43MHdLNWpsdFJLb2ZHanI5Z1ZmOEtoTTNWZ1YvZDNJVERUSVlhM1dBPT0&amp;landing_sign=EWuENa0XQrdHsgs4VknoeppasUZzAhQloApebKQumkI" width="720" height="600" frameborder="0"></iframe>
 
 # Notes
 
