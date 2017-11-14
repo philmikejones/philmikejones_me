@@ -1,12 +1,12 @@
 +++
 # Date this page was created.
-date = "2017-10-02"
+date = "2017-11-14"
 
 # Project title.
 title = "TownsendR"
 
 # Project summary to display on homepage.
-summary = "Townsend Material Deprivation Index created with leaflet and shiny."
+summary = "Interactive map of Townsend deprivation scores"
 
 # Optional image to display on homepage (relative to `static/img/` folder).
 image_preview = "townsendr.png"

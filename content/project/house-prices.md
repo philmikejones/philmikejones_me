@@ -1,12 +1,12 @@
 +++
 # Date this page was created.
-date = "2017-10-02"
+date = "2017-11-14"
 
 # Project title.
-title = "House prices 3D visualisation"
+title = "House prices"
 
 # Project summary to display on homepage.
-summary = "3D visualisation of house prices with three.js and 3D-printed into a model."
+summary = "3D visualisation of GB house prices using three.js."
 
 # Optional image to display on homepage (relative to `static/img/` folder).
 image_preview = "house-prices.png"
