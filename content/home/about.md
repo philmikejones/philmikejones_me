@@ -42,7 +42,7 @@ weight = 5
 I'm a research associate in the [Centre for Criminological Research](https://www.sheffield.ac.uk/law/research/clusters/ccr) based in the [School of Law](https://www.sheffield.ac.uk/law) at the University of Sheffield.
 I'm working on the "[Long-term impacts of 'Thatcherism': crime, politics and inequality](https://www.sheffield.ac.uk/law/research/projects/crimetrajectories)" project.
 
-I have just finished a PhD in human geography (subject to minor corrections!).
+I have just finished a PhD in human geography (subject to minor corrections!)
 from the University of Sheffield.
 I was supervised by [Dimitris Ballas](http://www.rug.nl/staff/d.ballas/cv?lang=en) and [Liddy Goyder](https://www.sheffield.ac.uk/scharr/sections/ph/staff/profiles/liddy), and I was funded by a scholarship from [Doncaster Metropolitan Borough Council](http://www.doncaster.gov.uk/).
 
