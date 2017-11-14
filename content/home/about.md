@@ -1,7 +1,7 @@
 +++
 # About/Biography widget.
 
-date = "2017-10-02"
+date = "2017-11-14"
 draft = false
 
 widget = "about"
@@ -12,18 +12,18 @@ weight = 5
 # List your academic interests.
 [interests]
   interests = [
-    "Health inequalities",
+    "Social and spatial inequalities",
     "Health resilience",
     "Geography and GIS",
     "Spatial microsimulation",
-    "Quantitative social research"
+    "Quantitative research methods"
   ]
 
 # List your qualifications (such as academic degrees).
-# [[education.courses]]
-#   course = "PhD in Artificial Intelligence"
-#   institution = "Stanford University"
-#   year = 2012
+[[education.courses]]
+ course = "PhD in Human Geography"
+ institution = "University of Sheffield"
+ year = 2017
 
 [[education.courses]]
   course = "MA in Social Research"
@@ -42,7 +42,8 @@ weight = 5
 I'm a research associate in the [Centre for Criminological Research](https://www.sheffield.ac.uk/law/research/clusters/ccr) based in the [School of Law](https://www.sheffield.ac.uk/law) at the University of Sheffield.
 I'm working on the "[Long-term impacts of 'Thatcherism': crime, politics and inequality](https://www.sheffield.ac.uk/law/research/projects/crimetrajectories)" project.
 
-I am finishing a PhD in human geography based at the Department of Geography at the University of Sheffield.
-My thesis is entitled 'A Spatial Microsimulation Analysis of Health Inequalities and Health Resilience'.
+I have just finished a PhD in human geography (subject to minor corrections!).
+from the University of Sheffield.
+I was supervised by [Dimitris Ballas](http://www.rug.nl/staff/d.ballas/cv?lang=en) and [Liddy Goyder](https://www.sheffield.ac.uk/scharr/sections/ph/staff/profiles/liddy), and I was funded by a scholarship from [Doncaster Metropolitan Borough Council](http://www.doncaster.gov.uk/).
 
-I was supervised by [Dimitris Ballas](http://www.rug.nl/staff/d.ballas/cv?lang=en) and [Liddy Goyder](https://www.sheffield.ac.uk/scharr/sections/ph/staff/profiles/liddy), and I was funded by a scholarship from [Doncaster Metropolitan Borough Council Public Health](http://www.doncaster.gov.uk/services/health-wellbeing/public-health).
+My thesis is entitled 'A Spatial Microsimulation Analysis of Health Inequalities and Health Resilience'.
