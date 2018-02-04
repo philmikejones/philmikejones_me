@@ -13,10 +13,10 @@ weight = 5
 [interests]
   interests = [
     "Social and spatial inequalities",
-    "Health resilience",
     "Geography and GIS",
+    "Quantitative research methods",
     "Spatial microsimulation",
-    "Quantitative research methods"
+    "Health resilience"
   ]
 
 # List your qualifications (such as academic degrees).
