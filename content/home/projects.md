@@ -2,7 +2,7 @@
 # Projects widget.
 # This widget displays all projects from `content/project/`.
 
-date = "2017-10-02"
+date = "2018-02-04"
 draft = false
 
 title = "Projects"
@@ -41,5 +41,8 @@ filter_default = 0
   name = "TownsendR"
   tag = ".townsendr"
 
+[[filter]]
+  name = "Thesis"
+  tag = ".thesis"
 +++
 
