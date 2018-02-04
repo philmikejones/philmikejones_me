@@ -14,7 +14,7 @@ disqusShortname = ""
 googleAnalytics = "UA-44027458-2"
 
 # Default language to use (if you setup multilingual support)
-defaultContentLanguage = "en-UK"
+# defaultContentLanguage = "en-GB"
 defaultContentLanguageInSubdir = false
 
 [outputs]
