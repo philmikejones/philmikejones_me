@@ -12,13 +12,19 @@ I am officially Dr Phil Jones!"
 Today I received an email saying my PhD has been awarded, and my thesis has been published.
 I am officially Dr Phil Jones!
 
-!["Piled Higher and Deeper" by Jorge Cham www.phdcomics.com](http://www.phdcomics.com/comics/archive/phd051807s.gif)
-
 
 ## Manuscript and source code
 
 The [manuscript and source code](http://etheses.whiterose.ac.uk/id/eprint/19283) are published on the White Rose consortium etheses repository.
 You can also [download or fork the source code](https://github.com/philmikejones/thesis) from github.
+
+```{r is-this-even-english, echo=FALSE}
+blogdown::shortcode_html(
+  "figure",
+  src = "http://www.phdcomics.com/comics/archive/phd051807s.gif",
+  alt = "'Piled Higher and Deeper' by Jorge Cham www.phdcomics.com",
+  caption = "'Piled Higher and Deeper' by Jorge Cham www.phdcomics.com")
+```
 
 The manuscript is licensed under a [Creative Commons Attribution 2.0 UK: England & Wales](https://creativecommons.org/licenses/by/2.0/uk/) license and the source code is [GPL v2](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html).
 My hope is this makes it as easy as possible to build on this research.
@@ -59,4 +65,4 @@ So, about 53 months from start to finish, not including a couple of leave of abs
 | Commits       | 2,068  |
 | Pull requests | 171    |
 
-These don't include any work I did on the thesis before I converted it to bookdown in August 2016.
+These don't include any work I did on the thesis before I converted it to bookdown in August 2016, or the work I did on [rakeR](https://philmikejones.github.io/rakeR/) (6,623 [LOC](https://en.wikipedia.org/wiki/Source_lines_of_code); 304 commits; 49 pull requests).
