@@ -24,6 +24,8 @@ My hope is this makes it as easy as possible to build on this research.
 
 ## PhD statistics
 
+A few statistics about the PhD, just out of curiosity...
+
 ### Dates
 
 | Event                         | Date           |
