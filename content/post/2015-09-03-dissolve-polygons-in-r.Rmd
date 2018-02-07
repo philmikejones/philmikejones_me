@@ -12,7 +12,26 @@ tags:
   - r
 ---
 
-Dissolving polygons is another fairly elementary GIS task that I need to perform regularly. With R this is can be a bit involved, but once done is fully reproducible and the code can be re-used. This post is essentially a companion piece to [Clipping polygons in R](https://philmikejones.wordpress.com/2015/09/01/clipping-polygons-in-r/); I wrote both because I often forget how to complete these tasks in R.
+## Update 2018-02-07 - using `sf`
+
+In the last couple of years or so the [`sf` package](https://cran.r-project.org/package=sf) has replaced most of the functionality of `rgdal` and `rgeos`.
+It has a number of advantages over these older packages:
+
+- They don't use the [S4 object system](http://adv-r.had.co.nz/S4.html), which means no more `@` slots.
+- `sf` functions are generally faster than `rgdal` counterparts.
+- `sf` data frames conform to [tidy data](http://r4ds.had.co.nz/tidy-data.html) principles and there are `dplyr` verbs to manipulate them.
+- `sf` functions no longer drop the data frame, which many of the `rgdal` functions did.
+
+Overall, then, `sf` is much more convenient and efficient to work with, so I've updated my tutoral to use this new package.
+The older `rgdal` based tutorial will of course still work.
+
+
+
+
+
+
+
+Dissolving polygons is another fairly elementary GIS task that I need to perform regularly. With R this is can be a bit involved, but once done is fully reproducible and the code can be re-used. This post is essentially a companion piece to [Clipping polygons in R](https://philmikejones.me/post/2015-09-01-clipping-polygons-in-r/); I wrote both because I often forget how to complete these tasks in R.
 
 ## Getting started
 
