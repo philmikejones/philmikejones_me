@@ -12,6 +12,14 @@ I am officially Dr Phil Jones!"
 Today I received an email saying my PhD has been awarded, and my thesis has been published.
 I am officially Dr Phil Jones!
 
+```{r thesis-submitted, echo=FALSE}
+blogdown::shortcode_html(
+  "figure",
+  src = "../../img/thesis-submitted.jpg",
+  alt = "Submitting my thesis, September 2017",
+  caption = "Submitting my thesis, September 2017")
+```
+
 
 ## Manuscript and source code
 
