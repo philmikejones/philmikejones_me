@@ -1,0 +1,206 @@
+---
+title: Clipping polygons in R
+date: 2015-09-01
+author: philmikejones
+categories:
+  - GIS
+  - rstats
+tags:
+  - clip
+  - gis
+  - polygon
+  - r
+---
+
+## Update February 2018
+
+In the last couple of years the [`sf` package](https://cran.r-project.org/package=sf) has been released and has been steadily maturing, to the point that it's now my preferred package for GIS in R, replacing `rgdal` and `rgeos`.
+I also recommend it for anyone coming to GIS in R for the first time, as it's faster and more efficient than the packages it replaces.
+I've updated this tutorial to show how to clip with `sf`.
+
+First, install and load `sf`:
+
+```{r sf-load}
+if (!require("sf")) {
+  install.packages("sf")
+  library("sf")
+}
+```
+
+Then download and open our test data (shapefiles of English regions and local authorities):
+
+```{r download-files}
+tmp_dir <- tempdir()
+
+# a region shapefile for England ~6MB
+tmp_reg <- tempfile(tmpdir = tmp_dir, fileext = ".zip")
+download.file(
+  "https://borders.ukdataservice.ac.uk/ukborders/easy_download/prebuilt/shape/England_gor_2011.zip",
+  destfile = tmp_reg
+)
+unzip(tmp_reg, exdir = tmp_dir)
+
+# local authorities for England ~ 
+tmp_lad <- tempfile(tmpdir = tmp_dir, fileext = ".zip")
+download.file(
+  "https://borders.ukdataservice.ac.uk/ukborders/easy_download/prebuilt/shape/England_lad_2011.zip",
+  destfile = tmp_lad
+)
+unzip(tmp_lad, exdir = tmp_dir)
+```
+
+```{r load-shapefiles}
+reg <- read_sf(  # regions
+  dsn = tmp_dir,
+  layer = "england_gor_2011"
+)
+
+lad <- read_sf(  # Local Authority District
+  dsn = tmp_dir,
+  layer = "england_lad_2011"
+)
+```
+
+Let's check these have loaded correctly with a plot:
+
+```{r}
+plot(reg, max.plot = 1)
+plot(lad, max.plot = 1)
+```
+
+To clip the LADs to a region, use `sf::st_contains()`:
+
+```{r}
+reg %>% 
+  filter(name == "Yorkshire and The Humber") %>% 
+  st_contains(., lad)
+```
+
+
+Clipping polygons is a basic GIS task. It involves removing unneeded polygons outside of an area of interest. For example, you might want to study all local authorities (LADs) in the Yorkshire and the Humber region but can only obtain shapefiles that contain all the LADs in the UK. Removing the LADs outside of Yorkshire and the Humber could be achieved by &#8216;clipping' the shapefile of LADs, using the extent of the larger region as a template. In R this takes a bit of work, but is quite possible with a few lines of code and has the advantage of being fully [reproducible](https://en.wikipedia.org/wiki/Reproducibility).
+
+## Getting started
+
+Let's start by obtaining administrative boundary shapefiles in England, loading necessary packages, and quickly checking the shapefiles are plotting correctly. We will need both regions and LADs. I'm using the freely-available boundaries from the [UK Data Service](http://census.ukdataservice.ac.uk/):
+
+<pre># The default behaviour of this script is to create a folder called 'clip-example'
+# and download and run everything from here.
+# You can change this by modifying the next two lines
+dir.create("clip-example")
+setwd("clip-example")
+
+# download and unzip UK administrative boundary shapefiles
+download.file("https://census.edina.ac.uk/ukborders/easy_download/prebuilt/shape/England_gor_2011.zip",
+              destfile = "gor.zip")  # ~6.4MB
+download.file("https://census.edina.ac.uk/ukborders/easy_download/prebuilt/shape/England_lad_2011.zip",
+              destfile = "lad.zip")  # ~25MB
+unzip("gor.zip", exdir = ".") # '.' just means current directory
+unzip("lad.zip", exdir = ".")
+
+# I recommend loading the shapefiles with readOGR() in the rgdal package
+# install.packages("rgdal") # uncomment and run if not already installed
+# install.packages("rgeos") # as above
+
+# If you run in to trouble installing rgdal and rgeos on Linux (Ubuntu) see:
+# https://philmikejones.me/post/2014-07-14-installing-rgdal-in-r-on-linux/
+
+require("rgdal")
+require("rgeos")
+
+regions &lt;- readOGR(".", "england_gor_2011")
+plot(regions) # worth a quick check everything looks like it should!
+
+lads &lt;- readOGR(".", "england_lad_2011")
+plot(lads)</pre>
+
+So now we have everything we need to begin: a shapefile of English regions, and a shapefile of English LADs.
+
+## Extract Yorkshire and the Humber
+
+You've hopefully seen from your test plot that the shapefiles are plotting all boundaries in England, so first let's remove all but Yorkshire and the Humber from the regions shapefile. We can do this by looking for the names of the regions in the shapefiles attributes file and using standard subsetting syntax. If you've used other GIS software before hopefully this idea will be familiar to you, but if not, don't worry!
+
+<pre>regions &lt;- regions[regions@data$name == "Yorkshire and The Humber", ]
+# Another plot confirms just the Yorkshire and The Humber region is left
+plot(regions)</pre>
+
+## Clip the LADs
+
+The <tt>regions</tt> object now just contains Yorkshire and The Humber, so we can use this as our bounds to extract LADs:
+
+<pre>yh_lads &lt;- gIntersection(regions, lads, byid = TRUE, drop_lower_td = TRUE)
+plot(yh_lads)</pre>
+
+Easy, but we're not finished yet. The clipped polygons no longer contain a data frame because the <tt>gIntersection</tt> doesn't (and can't) know which data frame items to save in to the new object. This means we must add them back in manually, but even this is relatively straight-forward.
+
+## Recreate the data frame
+
+The row names for the clipped polygons are a concatenation of the regions row name and the LAD row names. These are in the form <tt>x yyyy</tt> where <tt>x</tt> is the region row name (in our case always 5, because Yorkshire and The Humber was row 5) and <tt>yyyy</tt> is the LAD row name. This can be confirmed with:
+
+<pre>row.names(yh_lads)
+## [1] "5 2"   "5 8"   "5 9"   "5 37"  "5 39"  "5 43"  "5 105" "5 124" "5 162" "5 165"
+## [11] "5 175" "5 204" "5 207" "5 214" "5 225" "5 245" "5 248" "5 251" "5 254" "5 297"
+## [21] "5 320"</pre>
+
+So that we can create a data frame based on the LAD data frame, we must first ensure our row names match the LAD row names so they can be merged across. I do this by removing the &#8220;<tt>5 </tt>&#8221; with <tt>gsub()</tt>:
+
+<pre>row.names(yh_lads) &lt;- gsub("5 ", "", row.names(yh_lads))
+# Confirm it worked
+row.names(yh_lads)
+##  [1] "2"   "8"   "9"   "37"  "39"  "43"  "105" "124" "162" "165" "175" "204" "207"
+## [14] "214" "225" "245" "248" "251" "254" "297" "320"</pre>
+
+So far, so good. Now we create a variable &#8211; &#8220;<tt>keep</tt>&#8221; &#8211; that contains the row names that we want to keep from the LADs data frame.
+
+<pre>keep &lt;- row.names(yh_lads)</pre>
+
+For the sake of simplicity I also change the polygon IDs so they are consistent with their respective row names. This step is probably optional, but I prefer to ensure they match so I have a consistent set of IDs to work with later on. If you choose not to do this I don't think you'll run into any problems but [YMMV](http://www.urbandictionary.com/define.php?term=ymmv).
+
+<pre>yh_lads &lt;- spChFIDs(yh_lads, keep)</pre>
+
+Now we create a copy of the LAD dataframe and filter it so that it only contains the rows we want to keep, using row names to perform the match:
+
+<pre>yh_data &lt;- as.data.frame(lads@data[keep, ])</pre>
+
+Finally we create a <tt>SpatialPolygonsDataFrame</tt> object with our clipped polygons and our subsetted data frame:
+
+<pre>yh_lads &lt;- SpatialPolygonsDataFrame(yh_lads, yh_data)</pre>
+
+All being well, your final plot should look like this:
+
+<pre>plot(yh_lads)</pre><figure id="attachment_1711" class="thumbnail wp-caption aligncenter" style="width: 610px">
+
+<img class="size-full wp-image-1711" src="https://i2.wp.com/philmikejones.me/wp-content/uploads/2015/09/yh_lads.png?fit=600%2C376" alt="LADs in Yorks and the Humber" srcset="https://i0.wp.com/philmikejones.me/wp-content/uploads/2015/09/yh_lads.png?w=600 600w, https://i1.wp.com/philmikejones.me/wp-content/uploads/2015/09/yh_lads.png?resize=300%2C188 300w" sizes="(max-width: 600px) 100vw, 600px" data-recalc-dims="1" /><figcaption class="caption wp-caption-text">LADs in the Yorkshire and The Humber region</figcaption></figure> 
+
+And your <tt>yh_lads</tt> object should contain attribute data, which can be viewed with:
+
+<pre>yh_lads@data
+##           CODE                        NAME ALTNAME
+##  2   E07000164                   Hambleton    
+##  8   E07000169                       Selby    
+##  9   E08000017                   Doncaster    
+##  37  E07000168                 Scarborough    
+##  39  E08000032                    Bradford    
+##  43  E07000165                   Harrogate    
+##  105 E07000167                     Ryedale    
+##  124 E07000166               Richmondshire    
+##  162 E06000012     North East Lincolnshire    
+##  165 E08000035                       Leeds    
+##  175 E07000163                      Craven    
+##  204 E08000033                  Calderdale    
+##  207 E06000013          North Lincolnshire    
+##  214 E08000019                   Sheffield    
+##  225 E06000010 Kingston upon Hull, City of    
+##  245 E06000011    East Riding of Yorkshire    
+##  248 E06000014                        York    
+##  251 E08000036                   Wakefield    
+##  254 E08000034                    Kirklees    
+##  297 E08000016                    Barnsley    
+##  320 E08000018                   Rotherham    
+
+# If further confirmation is required:
+class(yh_lads)
+##  [1] "SpatialPolygonsDataFrame"
+##  attr(,"package")
+##  [1] "sp"</pre>
+
+Congratulations, a fully reproducible polygon clip!
