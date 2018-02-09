@@ -24,7 +24,7 @@ To set up github you need to register with a username and password, and [set up 
 
 Github maintains excellent [manual pages on creating a repository](https://help.github.com/articles/create-a-repo "") if you want to start a new project from scratch.
 
-If you want to work on a repository that someone else has started, for example the [spatial microsimulation in R](https://github.com/Robinlovelace/spatial-microsim-book "") repo, you can copy it (a process called _forking_) and work on your fork. When correctly set up, you can keep your fork up to date with the original (called the _upstream_), and quite easily pass changes back to the original repository once you're satisfied with your work. My previous post on [setting up a fork](http://philmikejones.wordpress.com/2014/09/14/forking-with-github/ "") (using terminal or command line), and [managing your fork](http://philmikejones.wordpress.com/2014/09/15/managing-your-git-fork/ "")  as well as the [github fork manual pages](https://help.github.com/articles/fork-a-repo ""), are a good starting point.
+If you want to work on a repository that someone else has started, for example the [spatial microsimulation in R](https://github.com/Robinlovelace/spatial-microsim-book "") repo, you can copy it (a process called _forking_) and work on your fork. When correctly set up, you can keep your fork up to date with the original (called the _upstream_), and quite easily pass changes back to the original repository once you're satisfied with your work. My previous post on [setting up a fork](../2014-09-14-forking-with-github/) (using terminal or command line), and [managing your fork](../2014-09-15-managing-your-git-fork/)  as well as the [github fork manual pages](https://help.github.com/articles/fork-a-repo), are a good starting point.
 
 ## Tracking Code
 
@@ -34,7 +34,7 @@ Such commits are made locally, on your local computer. This is incredibly useful
 
 ## Submitting Code to the Original Project
 
-If your repository is a fork of another project, you can easily submit code back to the original repository. You do this with a _pull request_. Commit your changes as normal and push these to github. Then, from within the github page for your forked project, simply click 'Pull Request.' You will need to provide the original author some information about your updates, and submit. More details are available on my [managing your git fork page](http://philmikejones.wordpress.com/2014/09/15/managing-your-git-fork/ ""), and on the [pull request manual page](https://help.github.com/articles/using-pull-requests "").
+If your repository is a fork of another project, you can easily submit code back to the original repository. You do this with a _pull request_. Commit your changes as normal and push these to github. Then, from within the github page for your forked project, simply click 'Pull Request.' You will need to provide the original author some information about your updates, and submit. More details are available on my [managing your git fork page](../2014-09-15-managing-your-git-fork/), and on the [pull request manual page](https://help.github.com/articles/using-pull-requests).
 
 ## Further Resources
 

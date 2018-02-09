@@ -64,7 +64,7 @@ I don't intend to go in to massive amounts of detail in this post about how to u
   9. Create a new key under **Public API access** (NOT OAuth)
  10. Choose a **browser key**
  11. You only want your website to be able to use this key so it isn't abused, so you will need to enter a domain in the **<span class="p6n-form-label ng-scope ng-isolate-scope"><span class="ng-scope">Accept requests from these HTTP referers (web sites)</span></span>** box. This will depend on if you're using WordPress or Google Sites. 
-      1. If you're using WordPress your website will be something like: https://mysite.wordpress.com (my blog here is https://philmikejones.wordpress.com). Enter this as **mysite.wordpress.com**; do not include the http:// or https:// because this will change.
+      1. If you're using WordPress your website will be something like: https://mysite.wordpress.com. Enter this as **mysite.wordpress.com**; do not include the http:// or https:// because this will change.
       2. If you're using Google Sites, the format is a bit different and will depend on whether you've created your site using your Sheffield university credentials or a personal email address. Assuming you've used your Sheffield university details, your website will be something like: https://sites.google.com/a/sheffield.ac.uk/mysite/. If that's the case enter **sites.google.com/a/sheffield.ac.uk/mysite/**, again excluding the http(s)://.
  12. You will have a new key which you can copy and paste to use in your embedded maps, like the example below:
 

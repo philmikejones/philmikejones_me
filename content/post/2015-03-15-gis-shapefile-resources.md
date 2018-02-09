@@ -30,4 +30,4 @@ To find the CRS for a specific region or country you can therefore search the [E
 
 ## GIS software
 
-No list of GIS resources would be complete without [QGIS](http://www.qgis.org/en/site/), which is a free and open source GIS package, comparable to ArcGIS ([and in my opinion, superior](https://philmikejones.wordpress.com/2014/05/16/qgis-thematic-mapping-open-source/)).
+No list of GIS resources would be complete without [QGIS](http://www.qgis.org/en/site/), which is a free and open source GIS package, comparable to ArcGIS ([and in my opinion, superior](https://geostat.uk/gis-software/)).
