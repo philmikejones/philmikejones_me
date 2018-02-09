@@ -31,6 +31,7 @@ At the event there were a couple of videos playing with members of the local ten
 <iframe src="https://player.vimeo.com/video/163719160?color=588d93&title=0&byline=0&portrait=0" width="720" height="405" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
 <p><a href="https://vimeo.com/163719160">Well North. Glyn&#039;s Story.</a> from <a href="https://vimeo.com/unityhouse">Unity House</a> on <a href="https://vimeo.com">Vimeo</a>.</p>
 
-More details about the event are available on the [event booking page](https://www.eventbrite.co.uk/e/doncasters-festival-of-research-fringe-events-tickets-38004578718#), from the [event flyer](../../documents/dfor2017-flyer.pdf) (`.pdf`, <1MB), or have a look at the storify profile below:
+More details about the event are available on the [event booking page](https://www.eventbrite.co.uk/e/doncasters-festival-of-research-fringe-events-tickets-38004578718#), from the [event flyer](../../documents/dfor2017-flyer.pdf) (`.pdf`, <1MB), or have a look at the twitter Moment for the Denaby fringe event below:
 
-<div class="storify"><iframe src="//storify.com/philmikejones/doncaster-festival-of-research-2017/embed?border=false" width="100%" height="750" frameborder="no" allowtransparency="true"></iframe><script src="//storify.com/philmikejones/doncaster-festival-of-research-2017.js?border=false"></script><noscript>[<a href="//storify.com/philmikejones/doncaster-festival-of-research-2017" target="_blank">View the story "Doncaster Festival of Research, 2017" on Storify</a>]</noscript></div>
+<a class="twitter-moment" href="https://twitter.com/i/moments/961937578529304576?ref_src=twsrc%5Etfw">#DFoR17 Denaby Fringe event</a>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
