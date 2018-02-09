@@ -6,7 +6,7 @@ categories:
   - Code
 ---
 
-In the post [forking with github](http://philmikejones.wordpress.com/2014/09/14/forking-with-github/ "Forking with Github") I described how to fork a repository and have it point back to the original. In this post I describe how I manage my fork and ultimately how I suggest changes to the original author that they may (or may not) make in their original.
+In the post [forking with github](../2014-09-14-forking-with-github/) I described how to fork a repository and have it point back to the original. In this post I describe how I manage my fork and ultimately how I suggest changes to the original author that they may (or may not) make in their original.
 
 ## Tracking Changes in Your Forked Version
 
