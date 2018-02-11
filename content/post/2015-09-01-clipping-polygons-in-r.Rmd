@@ -88,7 +88,7 @@ ggsave(
 )
 ```
 
-```{r insert-regions-plot, include=FALSE, echo=FALSE, eval=TRUE}
+```{r insert-regions-plot, include=TRUE, echo=FALSE, eval=TRUE}
 blogdown::shortcode_html(
   "figure",
   src = "../../img/regions.png",
