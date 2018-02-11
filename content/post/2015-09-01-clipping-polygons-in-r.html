@@ -68,6 +68,7 @@ lad &lt;- read_sf(  # Local Authority District
 <pre class="r"><code>ggplot(reg) + geom_sf()</code></pre>
 {{< figure src="../../img/regions.png" alt="English regions" caption="English regions" >}}
 <pre class="r"><code>ggplot(lad) + geom_sf()</code></pre>
+{{< figure src="../../img/lads.png" alt="English local authority districts" caption="English local authority districts" >}}
 <p>To clip the LADs to a region, use <code>sf::st_contains()</code> with <code>sparse = FALSE</code> argument:</p>
 <pre class="r"><code>yh &lt;- 
   reg %&gt;% 
@@ -78,6 +79,7 @@ yh_lads &lt;-
   filter(st_contains(yh, ., sparse = FALSE))</code></pre>
 <p>And a plot to check the clip succeeded:</p>
 <pre class="r"><code>ggplot(yh_lads) + geom_sf()</code></pre>
+{{< figure src="../../img/yh_lads.png" alt="LADs in Yorkshire and The Humber" caption="LADs in Yorkshire and The Humber" >}}
 <p>We can also check the data are still included in the <code>yh_lads</code> object (without the geometry):</p>
 <pre class="r"><code>head(yh_lads)</code></pre>
 <pre><code>##        code        name altname     label

@@ -111,7 +111,7 @@ ggsave(
 )
 ```
 
-```{r insert-lads-plot, include=FALSE}
+```{r insert-lads-plot, echo=FALSE}
 blogdown::shortcode_html(
   "figure",
   src = "../../img/lads.png",
@@ -138,6 +138,8 @@ ggplot(yh_lads) + geom_sf()
 ```
 
 ```{r save-yh_lads, include=FALSE, echo=FALSE, eval=FALSE}
+sf::st_geometry(yh_lads) <- NULL
+yh_lads <- head(yh_lads)
 saveRDS(yh_lads, "static/data/yh_lads.RDS")
 ggsave(
   "static/img/yh_lads.png",
@@ -145,7 +147,7 @@ ggsave(
 )
 ```
 
-```{r insert-yh_lads-plot, include=FALSE}
+```{r insert-yh_lads-plot, echo=FALSE}
 blogdown::shortcode_html(
   "figure",
   src = "../../img/yh_lads.png",
@@ -157,7 +159,6 @@ We can also check the data are still included in the `yh_lads` object (without t
 
 ```{r load-yh_lads, include=FALSE, echo=FALSE, eval=TRUE}
 yh_lads <- readRDS("../../static/data/yh_lads.RDS")
-sf::st_geometry(yh_lads) <- NULL
 ```
 
 ```{r str-yh-lads}
