@@ -73,12 +73,28 @@ plot(reg, max.plot = 1)
 plot(lad, max.plot = 1)
 ```
 
-To clip the LADs to a region, use `sf::st_contains()`:
+To clip the LADs to a region, use `sf::st_contains()` with `sparse = FALSE` argument:
 
 ```{r}
-reg %>% 
-  filter(name == "Yorkshire and The Humber") %>% 
-  st_contains(., lad)
+yh <- 
+  reg %>% 
+  filter(name == "Yorkshire and The Humber")
+
+yh_lads <- 
+  lad %>% 
+  filter(st_contains(yh, ., sparse = FALSE))
+```
+
+And a plot to check the clip succeeded:
+
+```{r}
+plot(yh_lads, max.plot = 1)
+```
+
+We can also check the data are still included in the `yh_lads` object:
+
+```{r}
+yh_lads
 ```
 
 
