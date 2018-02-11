@@ -23,7 +23,7 @@ I've updated this tutorial to show how to clip with `sf`.
 
 First, install and load `sf` for loading the shapefiles, the `tidyverse` for manipulating the data, and `ggplot2` for plotting the maps:
 
-```{r package-load, include=TRUE, echo=TRUE, eval=FALSE}
+```{r package-load, eval=FALSE}
 if (!require("tidyverse")) {
   install.packages("tidyverse")
   library("tidyverse")
@@ -36,12 +36,14 @@ if (!require("sf")) {
 
 # currently (early 2018) you need the development version of ggplot2
 # to work with sf
-# install.packages("devtools") if you don't already have it
+if (!require("devtools")) {
+  install.packages("devtools")
+}
 devtools::install_github("tidyverse/ggplot2")
 library("ggplot2")
 ```
 
-Then download and open our test data (shapefiles of English regions and local authorities):
+Then download and unzip our test data (shapefiles of English regions and local authorities):
 
 ```{r download-files, eval=FALSE}
 tmp_dir <- tempdir()
@@ -63,7 +65,9 @@ download.file(
 unzip(tmp_lad, exdir = tmp_dir)
 ```
 
-```{r load-shapefiles, include=TRUE, echo=TRUE, eval=FALSE}
+Now load these files ready for clipping:
+
+```{r load-shapefiles, eval=FALSE}
 reg <- read_sf(  # regions
   dsn = tmp_dir,
   layer = "england_gor_2011"
@@ -77,7 +81,7 @@ lad <- read_sf(  # Local Authority District
 
 Let's check these have loaded correctly with a plot:
 
-```{r create-regions-plot, include=TRUE, echo=TRUE, eval=FALSE}
+```{r create-regions-plot, eval=FALSE}
 ggplot(reg) + geom_sf()
 ```
 
@@ -88,7 +92,7 @@ ggsave(
 )
 ```
 
-```{r insert-regions-plot, include=TRUE, echo=FALSE, eval=TRUE}
+```{r insert-regions-plot, include=FALSE}
 blogdown::shortcode_html(
   "figure",
   src = "../../img/regions.png",
@@ -96,7 +100,7 @@ blogdown::shortcode_html(
   caption = "English regions")
 ```
 
-```{r create-lads-plot, include=TRUE, echo=TRUE, eval=FALSE}
+```{r create-lads-plot, eval=FALSE}
 ggplot(lad) + geom_sf()
 ```
 
@@ -107,7 +111,7 @@ ggsave(
 )
 ```
 
-```{r insert-lads-plot, include=FALSE, echo=FALSE, eval=TRUE}
+```{r insert-lads-plot, include=FALSE}
 blogdown::shortcode_html(
   "figure",
   src = "../../img/lads.png",
@@ -117,7 +121,7 @@ blogdown::shortcode_html(
 
 To clip the LADs to a region, use `sf::st_contains()` with `sparse = FALSE` argument:
 
-```{r filter-yh-lads, include=TRUE, echo=TRUE, eval=FALSE}
+```{r filter-yh-lads, eval=FALSE}
 yh <- 
   reg %>% 
   filter(name == "Yorkshire and The Humber")
@@ -129,7 +133,7 @@ yh_lads <-
 
 And a plot to check the clip succeeded:
 
-```{r create-yh_lads-plot, include=TRUE, echo=TRUE, eval=FALSE}
+```{r create-yh_lads-plot, eval=FALSE}
 ggplot(yh_lads) + geom_sf()
 ```
 
@@ -141,7 +145,7 @@ ggsave(
 )
 ```
 
-```{r insert-yh_lads-plot, include=FALSE, echo=FALSE, eval=TRUE}
+```{r insert-yh_lads-plot, include=FALSE}
 blogdown::shortcode_html(
   "figure",
   src = "../../img/yh_lads.png",
@@ -149,14 +153,15 @@ blogdown::shortcode_html(
   caption = "LADs in Yorkshire and The Humber")
 ```
 
-We can also check the data are still included in the `yh_lads` object:
+We can also check the data are still included in the `yh_lads` object (without the geometry):
 
 ```{r load-yh_lads, include=FALSE, echo=FALSE, eval=TRUE}
 yh_lads <- readRDS("../../static/data/yh_lads.RDS")
+sf::st_geometry(yh_lads) <- NULL
 ```
 
-```{r str-yh-lads, include=TRUE, echo=TRUE, eval=TRUE}
-yh_lads
+```{r str-yh-lads}
+head(yh_lads)
 ```
 
 
