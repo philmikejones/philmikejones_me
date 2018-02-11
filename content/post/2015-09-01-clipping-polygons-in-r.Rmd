@@ -12,15 +12,18 @@ tags:
   - r
 ---
 
+Clipping polygons is a basic GIS task. It involves removing unneeded polygons outside of an area of interest. For example, you might want to study all local authorities (LADs) in the Yorkshire and the Humber region but can only obtain shapefiles that contain all the LADs in the UK. Removing the LADs outside of Yorkshire and the Humber could be achieved by &#8216;clipping' the shapefile of LADs, using the extent of the larger region as a template. In R this takes a bit of work, but is quite possible with a few lines of code and has the advantage of being fully [reproducible](https://en.wikipedia.org/wiki/Reproducibility).
+
+
 ## Update February 2018
 
 In the last couple of years the [`sf` package](https://cran.r-project.org/package=sf) has been released and has been steadily maturing, to the point that it's now my preferred package for GIS in R, replacing `rgdal` and `rgeos`.
 I also recommend it for anyone coming to GIS in R for the first time, as it's faster and more efficient than the packages it replaces.
 I've updated this tutorial to show how to clip with `sf`.
 
-First, install and load `sf` and the tidyverse:
+First, install and load `sf` for loading the shapefiles, the `tidyverse` for manipulating the data, and `ggplot2` for plotting the maps:
 
-```{r package-load}
+```{r package-load, include=TRUE, echo=TRUE, eval=FALSE}
 if (!require("tidyverse")) {
   install.packages("tidyverse")
   library("tidyverse")
@@ -30,11 +33,17 @@ if (!require("sf")) {
   install.packages("sf")
   library("sf")
 }
+
+# currently (early 2018) you need the development version of ggplot2
+# to work with sf
+# install.packages("devtools") if you don't already have it
+devtools::install_github("tidyverse/ggplot2")
+library("ggplot2")
 ```
 
 Then download and open our test data (shapefiles of English regions and local authorities):
 
-```{r download-files}
+```{r download-files, eval=FALSE}
 tmp_dir <- tempdir()
 
 # a region shapefile for England ~6MB
@@ -54,7 +63,7 @@ download.file(
 unzip(tmp_lad, exdir = tmp_dir)
 ```
 
-```{r load-shapefiles}
+```{r load-shapefiles, include=TRUE, echo=TRUE, eval=FALSE}
 reg <- read_sf(  # regions
   dsn = tmp_dir,
   layer = "england_gor_2011"
@@ -68,14 +77,47 @@ lad <- read_sf(  # Local Authority District
 
 Let's check these have loaded correctly with a plot:
 
-```{r}
-plot(reg, max.plot = 1)
-plot(lad, max.plot = 1)
+```{r create-regions-plot, include=TRUE, echo=TRUE, eval=FALSE}
+ggplot(reg) + geom_sf()
+```
+
+```{r save-regions-plot, include=FALSE, echo=FALSE, eval=FALSE}
+ggsave(
+  "static/img/regions.png",
+  width = 254, units = "mm", dpi = 72
+)
+```
+
+```{r insert-regions-plot, include=FALSE, echo=FALSE, eval=TRUE}
+blogdown::shortcode_html(
+  "figure",
+  src = "../../img/regions.png",
+  alt = "English regions",
+  caption = "English regions")
+```
+
+```{r create-lads-plot, include=TRUE, echo=TRUE, eval=FALSE}
+ggplot(lad) + geom_sf()
+```
+
+```{r save-lads-plot, include=FALSE, echo=FALSE, eval=FALSE}
+ggsave(
+  "static/img/lads.png",
+  width = 254, units = "mm", dpi = 72
+)
+```
+
+```{r insert-lads-plot, include=FALSE, echo=FALSE, eval=TRUE}
+blogdown::shortcode_html(
+  "figure",
+  src = "../../img/lads.png",
+  alt = "English local authority districts",
+  caption = "English local authority districts")
 ```
 
 To clip the LADs to a region, use `sf::st_contains()` with `sparse = FALSE` argument:
 
-```{r}
+```{r filter-yh-lads, include=TRUE, echo=TRUE, eval=FALSE}
 yh <- 
   reg %>% 
   filter(name == "Yorkshire and The Humber")
@@ -87,20 +129,40 @@ yh_lads <-
 
 And a plot to check the clip succeeded:
 
-```{r}
-plot(yh_lads, max.plot = 1)
+```{r create-yh_lads-plot, include=TRUE, echo=TRUE, eval=FALSE}
+ggplot(yh_lads) + geom_sf()
+```
+
+```{r save-yh_lads, include=FALSE, echo=FALSE, eval=FALSE}
+saveRDS(yh_lads, "static/data/yh_lads.RDS")
+ggsave(
+  "static/img/yh_lads.png",
+  width = 254, units = "mm", dpi = 72
+)
+```
+
+```{r insert-yh_lads-plot, include=FALSE, echo=FALSE, eval=TRUE}
+blogdown::shortcode_html(
+  "figure",
+  src = "../../img/yh_lads.png",
+  alt = "LADs in Yorkshire and The Humber",
+  caption = "LADs in Yorkshire and The Humber")
 ```
 
 We can also check the data are still included in the `yh_lads` object:
 
-```{r}
+```{r load-yh_lads, include=FALSE, echo=FALSE, eval=TRUE}
+yh_lads <- readRDS("../../static/data/yh_lads.RDS")
+```
+
+```{r str-yh-lads, include=TRUE, echo=TRUE, eval=TRUE}
 yh_lads
 ```
 
 
-Clipping polygons is a basic GIS task. It involves removing unneeded polygons outside of an area of interest. For example, you might want to study all local authorities (LADs) in the Yorkshire and the Humber region but can only obtain shapefiles that contain all the LADs in the UK. Removing the LADs outside of Yorkshire and the Humber could be achieved by &#8216;clipping' the shapefile of LADs, using the extent of the larger region as a template. In R this takes a bit of work, but is quite possible with a few lines of code and has the advantage of being fully [reproducible](https://en.wikipedia.org/wiki/Reproducibility).
+## Original post
 
-## Getting started
+### Getting started
 
 Let's start by obtaining administrative boundary shapefiles in England, loading necessary packages, and quickly checking the shapefiles are plotting correctly. We will need both regions and LADs. I'm using the freely-available boundaries from the [UK Data Service](http://census.ukdataservice.ac.uk/):
 
@@ -136,7 +198,7 @@ plot(lads)</pre>
 
 So now we have everything we need to begin: a shapefile of English regions, and a shapefile of English LADs.
 
-## Extract Yorkshire and the Humber
+### Extract Yorkshire and the Humber
 
 You've hopefully seen from your test plot that the shapefiles are plotting all boundaries in England, so first let's remove all but Yorkshire and the Humber from the regions shapefile. We can do this by looking for the names of the regions in the shapefiles attributes file and using standard subsetting syntax. If you've used other GIS software before hopefully this idea will be familiar to you, but if not, don't worry!
 
@@ -144,7 +206,7 @@ You've hopefully seen from your test plot that the shapefiles are plotting all b
 # Another plot confirms just the Yorkshire and The Humber region is left
 plot(regions)</pre>
 
-## Clip the LADs
+### Clip the LADs
 
 The <tt>regions</tt> object now just contains Yorkshire and The Humber, so we can use this as our bounds to extract LADs:
 
@@ -153,7 +215,7 @@ plot(yh_lads)</pre>
 
 Easy, but we're not finished yet. The clipped polygons no longer contain a data frame because the <tt>gIntersection</tt> doesn't (and can't) know which data frame items to save in to the new object. This means we must add them back in manually, but even this is relatively straight-forward.
 
-## Recreate the data frame
+### Recreate the data frame
 
 The row names for the clipped polygons are a concatenation of the regions row name and the LAD row names. These are in the form <tt>x yyyy</tt> where <tt>x</tt> is the region row name (in our case always 5, because Yorkshire and The Humber was row 5) and <tt>yyyy</tt> is the LAD row name. This can be confirmed with:
 
@@ -186,11 +248,9 @@ Finally we create a <tt>SpatialPolygonsDataFrame</tt> object with our clipped po
 
 <pre>yh_lads &lt;- SpatialPolygonsDataFrame(yh_lads, yh_data)</pre>
 
-All being well, your final plot should look like this:
+All being well, you should be able to plot the result with:
 
-<pre>plot(yh_lads)</pre><figure id="attachment_1711" class="thumbnail wp-caption aligncenter" style="width: 610px">
-
-<img class="size-full wp-image-1711" src="https://i2.wp.com/philmikejones.me/wp-content/uploads/2015/09/yh_lads.png?fit=600%2C376" alt="LADs in Yorks and the Humber" srcset="https://i0.wp.com/philmikejones.me/wp-content/uploads/2015/09/yh_lads.png?w=600 600w, https://i1.wp.com/philmikejones.me/wp-content/uploads/2015/09/yh_lads.png?resize=300%2C188 300w" sizes="(max-width: 600px) 100vw, 600px" data-recalc-dims="1" /><figcaption class="caption wp-caption-text">LADs in the Yorkshire and The Humber region</figcaption></figure> 
+<pre>plot(yh_lads)</pre>
 
 And your <tt>yh_lads</tt> object should contain attribute data, which can be viewed with:
 
