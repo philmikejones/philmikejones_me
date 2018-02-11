@@ -66,6 +66,12 @@ lad &lt;- read_sf(  # Local Authority District
 )</code></pre>
 <p>Let’s check these have loaded correctly with a plot:</p>
 <pre class="r"><code>ggplot(reg) + geom_sf()</code></pre>
+<pre class="r"><code>blogdown::shortcode_html(
+  &quot;figure&quot;,
+  src = &quot;../../img/regions.png&quot;,
+  alt = &quot;English regions&quot;,
+  caption = &quot;English regions&quot;)</code></pre>
+{{< figure src="../../img/regions.png" alt="English regions" caption="English regions" >}}
 <pre class="r"><code>ggplot(lad) + geom_sf()</code></pre>
 <p>To clip the LADs to a region, use <code>sf::st_contains()</code> with <code>sparse = FALSE</code> argument:</p>
 <pre class="r"><code>yh &lt;- 
