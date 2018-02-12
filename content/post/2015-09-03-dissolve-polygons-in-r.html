@@ -14,20 +14,86 @@ tags:
 
 
 
+<p>Dissolving polygons is another fairly elementary GIS task that I need to perform regularly. With R this is can be a bit involved, but once done is fully reproducible and the code can be re-used. This post is essentially a companion piece to <a href="https://philmikejones.me/post/2015-09-01-clipping-polygons-in-r/">Clipping polygons in R</a>; I wrote both because I often forget how to complete these tasks in R.</p>
 <div id="update-2018-02-07---using-sf" class="section level2">
 <h2>Update 2018-02-07 - using <code>sf</code></h2>
 <p>In the last couple of years or so the <a href="https://cran.r-project.org/package=sf"><code>sf</code> package</a> has replaced most of the functionality of <code>rgdal</code> and <code>rgeos</code>. It has a number of advantages over these older packages:</p>
 <ul>
-<li>They don’t use the <a href="http://adv-r.had.co.nz/S4.html">S4 object system</a>, which means no more <code>@</code> slots.</li>
+<li>It doesn’t use the <a href="http://adv-r.had.co.nz/S4.html">S4 object system</a>, which means no more <code>@</code> slots.</li>
 <li><code>sf</code> functions are generally faster than <code>rgdal</code> counterparts.</li>
 <li><code>sf</code> data frames conform to <a href="http://r4ds.had.co.nz/tidy-data.html">tidy data</a> principles and there are <code>dplyr</code> verbs to manipulate them.</li>
-<li><code>sf</code> functions no longer drop the data frame, which many of the <code>rgdal</code> functions did.</li>
 </ul>
 <p>Overall, then, <code>sf</code> is much more convenient and efficient to work with, so I’ve updated my tutoral to use this new package. The older <code>rgdal</code> based tutorial will of course still work.</p>
-<p>Dissolving polygons is another fairly elementary GIS task that I need to perform regularly. With R this is can be a bit involved, but once done is fully reproducible and the code can be re-used. This post is essentially a companion piece to <a href="https://philmikejones.me/post/2015-09-01-clipping-polygons-in-r/">Clipping polygons in R</a>; I wrote both because I often forget how to complete these tasks in R.</p>
+<div id="getting-started" class="section level3">
+<h3>Getting started</h3>
+<p>First, install and load <code>sf</code> for loading the shapefiles, <code>dplyr</code> for manipulating the data, and <code>ggplot2</code> for plotting the maps. You could also load the complete tidyverse but this currently causes problems for loading the development version of <code>ggplot2</code> so use caution. Hopefully this issue will be resolved with an update to <code>ggplot2</code> in the near future.</p>
+<pre class="r"><code>if (!require(&quot;dplyr&quot;)) {
+  install.packages(&quot;dplyr&quot;)
+  library(&quot;dplyr&quot;)
+}
+
+if (!require(&quot;sf&quot;)) {
+  install.packages(&quot;sf&quot;)
+  library(&quot;sf&quot;)
+}
+
+# currently (early 2018) you need the development version of ggplot2
+# to work with sf
+if (!require(&quot;devtools&quot;)) {
+  install.packages(&quot;devtools&quot;)
+}
+devtools::install_github(&quot;tidyverse/ggplot2&quot;)
+library(&quot;ggplot2&quot;)</code></pre>
+<p>Next we need to download the files we’ll be using. I’ve used regions as a simple example. We’ll download the files to a temporary directory and get started.</p>
+<pre class="r"><code>tmp_dir &lt;- tempdir()
+tmp     &lt;- tempfile(tmpdir = tmp_dir, fileext = &quot;.zip&quot;)
+
+download.file(
+  &quot;http://census.edina.ac.uk/ukborders/easy_download/prebuilt/shape/England_gor_2011.zip&quot;,
+  destfile = tmp
+)
+unzip(tmp, exdir = tmp_dir)</code></pre>
+<p>And now load the shapefile we just extracted and plot it to ensure it’s worked:</p>
+<pre class="r"><code>regions &lt;- read_sf(tmp_dir, &quot;england_gor_2011&quot;)
+ggplot(regions) + geom_sf()</code></pre>
+{{< figure src="../../img/regions.png" alt="English regions" caption="English regions" >}}
+<p>Now lets have a look at the data (without the geometry):</p>
+<pre class="r"><code>head(st_set_geometry(regions, NULL))</code></pre>
+<pre><code>##        code                     name     label
+## 1 E12000006          East of England E12000006
+## 2 E12000007                   London E12000007
+## 3 E12000002               North West E12000002
+## 4 E12000001               North East E12000001
+## 5 E12000004            East Midlands E12000004
+## 6 E12000003 Yorkshire and The Humber E12000003</code></pre>
+<p>Dissolves with <code>sf()</code> do not save the data frame (other than the geometry column) by default without specifying how to aggregate the data. Using area as an example:</p>
+<pre class="r"><code>regions$area &lt;- st_area(regions)
+head(st_set_geometry(regions, NULL))</code></pre>
+<pre><code>##        code                     name     label        area
+## 1 E12000006          East of England E12000006 19575024459
+## 2 E12000007                   London E12000007  1594720097
+## 3 E12000002               North West E12000002 14915248139
+## 4 E12000001               North East E12000001  8676411818
+## 5 E12000004            East Midlands E12000004 15814753263
+## 6 E12000003 Yorkshire and The Humber E12000003 15564151183</code></pre>
+<p>Now we have something some data that’s meaningful to group, we can just use <code>summarise()</code> to group the data and perform the dissolve:</p>
+<pre class="r"><code>england &lt;- 
+  regions %&gt;% 
+  summarise(area = sum(area))</code></pre>
+<pre class="r"><code>ggplot(england) + geom_sf()</code></pre>
+{{< figure src="../../img/dissolve-preserve-data.png" alt="Dissolve polygons" caption="Dissolve polygons" >}}
+<p>If you don’t have or want data to save the dissolve just create a column to <code>group_by()</code> so that the features (rows) that are to be grouped together are given the same data:</p>
+<pre class="r"><code>england &lt;- 
+  regions %&gt;% 
+  mutate(country = &quot;england&quot;) %&gt;% 
+  group_by(country) %&gt;% 
+  summarise()</code></pre>
 </div>
-<div id="getting-started" class="section level2">
-<h2>Getting started</h2>
+</div>
+<div id="original-rgdal-instructions" class="section level2">
+<h2>Original <code>rgdal</code> instructions</h2>
+<div id="getting-started-1" class="section level3">
+<h3>Getting started</h3>
 <p>Let’s gather together everything we need to complete this example. We need a shapefile of small geographies to ‘dissolve’, a lookup table to tell us which polygons dissolve into which, and we need a couple of R spatial packages to run everything. Let’s get started.</p>
 <pre># The default behaviour of this script is to create a folder called 'dissolve-example'
 # and download and run everything from here.
@@ -47,14 +113,9 @@ unzip("lad-region-lookup.zip", exdir = ".")
 region &lt;- readOGR(".", "England_gor_2011")
 
 # Check the shapefile has loaded correctly
-plot(region)</pre>
-<figure id="attachment_1725" class="thumbnail wp-caption aligncenter" style="width: 610px">
-<img class="size-full wp-image-1725" src="https://i2.wp.com/philmikejones.me/wp-content/uploads/2015/09/region.png?fit=600%2C454" alt="Regions" srcset="https://i0.wp.com/philmikejones.me/wp-content/uploads/2015/09/region.png?w=600 600w, https://i1.wp.com/philmikejones.me/wp-content/uploads/2015/09/region.png?resize=300%2C227 300w" sizes="(max-width: 600px) 100vw, 600px" data-recalc-dims="1" />
-<figcaption class="caption wp-caption-text">
-Regions
-</figcaption>
-</figure>
-<pre># We're going to dissolve all regions in to one country (England!)
+plot(region)
+
+# We're going to dissolve all regions in to one country (England!)
 # For this we'll create a lookup table and merge with the spatial data
 # Hopefully for your 'real' data you have a lookup table of all polygons and
 # their larger geography already!
@@ -64,6 +125,7 @@ lu$CODE &lt;- as.character(lu$CODE)
 lu$NAME &lt;- as.character(lu$NAME)
 lu$country &lt;- NA
 lu$country &lt;- "England"</pre>
+</div>
 </div>
 <div id="merge" class="section level2">
 <h2>Merge</h2>
@@ -100,13 +162,6 @@ region &lt;- SpatialPolygonsDataFrame(region, lu)
 
 # Check it's all worked
 plot(region)</pre>
-Your plot should look like this:
-<figure id="attachment_1722" class="thumbnail wp-caption aligncenter" style="width: 610px">
-<img class="size-full wp-image-1722" src="https://i2.wp.com/philmikejones.me/wp-content/uploads/2015/09/dissolve-example.png?fit=600%2C454" alt="Dissolved polygons" srcset="https://i0.wp.com/philmikejones.me/wp-content/uploads/2015/09/dissolve-example.png?w=600 600w, https://i0.wp.com/philmikejones.me/wp-content/uploads/2015/09/dissolve-example.png?resize=300%2C227 300w" sizes="(max-width: 600px) 100vw, 600px" data-recalc-dims="1" />
-<figcaption class="caption wp-caption-text">
-Example dissolved polygons
-</figcaption>
-</figure>
 <p>And your data frame should look like this:</p>
 <pre>region@data
 ##   country

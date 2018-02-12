@@ -18,7 +18,7 @@ tags:
 <div id="update-february-2018" class="section level2">
 <h2>Update February 2018</h2>
 <p>In the last couple of years the <a href="https://cran.r-project.org/package=sf"><code>sf</code> package</a> has been released and has been steadily maturing, to the point that it’s now my preferred package for GIS in R, replacing <code>rgdal</code> and <code>rgeos</code>. I also recommend it for anyone coming to GIS in R for the first time, as it’s faster and more efficient than the packages it replaces. I’ve updated this tutorial to show how to clip with <code>sf</code>.</p>
-<p>First, install and load <code>sf</code> for loading the shapefiles, the <code>dplyr</code> for manipulating the data, and <code>ggplot2</code> for plotting the maps. You could also load the complete tidyverse but this currently causes problems for loading the development version of <code>ggplot2</code> so use caution. Hopefully this issue will be resolved with an update to <code>ggplot2</code> in the near future.</p>
+<p>First, install and load <code>sf</code> for loading the shapefiles, <code>dplyr</code> for manipulating the data, and <code>ggplot2</code> for plotting the maps. You could also load the complete tidyverse but this currently causes problems for loading the development version of <code>ggplot2</code> so use caution. Hopefully this issue will be resolved with an update to <code>ggplot2</code> in the near future.</p>
 <pre class="r"><code>if (!require(&quot;dplyr&quot;)) {
   install.packages(&quot;dplyr&quot;)
   library(&quot;dplyr&quot;)
