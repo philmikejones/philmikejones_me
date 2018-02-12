@@ -113,14 +113,9 @@ unzip("lad-region-lookup.zip", exdir = ".")
 region &lt;- readOGR(".", "England_gor_2011")
 
 # Check the shapefile has loaded correctly
-plot(region)</pre>
-<figure id="attachment_1725" class="thumbnail wp-caption aligncenter" style="width: 610px">
-<img class="size-full wp-image-1725" src="https://i2.wp.com/philmikejones.me/wp-content/uploads/2015/09/region.png?fit=600%2C454" alt="Regions" srcset="https://i0.wp.com/philmikejones.me/wp-content/uploads/2015/09/region.png?w=600 600w, https://i1.wp.com/philmikejones.me/wp-content/uploads/2015/09/region.png?resize=300%2C227 300w" sizes="(max-width: 600px) 100vw, 600px" data-recalc-dims="1" />
-<figcaption class="caption wp-caption-text">
-Regions
-</figcaption>
-</figure>
-<pre># We're going to dissolve all regions in to one country (England!)
+plot(region)
+
+# We're going to dissolve all regions in to one country (England!)
 # For this we'll create a lookup table and merge with the spatial data
 # Hopefully for your 'real' data you have a lookup table of all polygons and
 # their larger geography already!
@@ -167,13 +162,6 @@ region &lt;- SpatialPolygonsDataFrame(region, lu)
 
 # Check it's all worked
 plot(region)</pre>
-Your plot should look like this:
-<figure id="attachment_1722" class="thumbnail wp-caption aligncenter" style="width: 610px">
-<img class="size-full wp-image-1722" src="https://i2.wp.com/philmikejones.me/wp-content/uploads/2015/09/dissolve-example.png?fit=600%2C454" alt="Dissolved polygons" srcset="https://i0.wp.com/philmikejones.me/wp-content/uploads/2015/09/dissolve-example.png?w=600 600w, https://i0.wp.com/philmikejones.me/wp-content/uploads/2015/09/dissolve-example.png?resize=300%2C227 300w" sizes="(max-width: 600px) 100vw, 600px" data-recalc-dims="1" />
-<figcaption class="caption wp-caption-text">
-Example dissolved polygons
-</figcaption>
-</figure>
 <p>And your data frame should look like this:</p>
 <pre>region@data
 ##   country
