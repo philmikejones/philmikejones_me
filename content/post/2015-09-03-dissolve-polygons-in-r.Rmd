@@ -32,11 +32,35 @@ The older `rgdal` based tutorial will of course still work.
 
 ### Getting started
 
-First we need to download the files we'll be using.
-I've used regions as a simple example.
-We'll download the files to a temp directory and get started.
+First, install and load `sf` for loading the shapefiles, `dplyr` for manipulating the data, and `ggplot2` for plotting the maps.
+You could also load the complete tidyverse but this currently causes problems for loading the development version of `ggplot2` so use caution.
+Hopefully this issue will be resolved with an update to `ggplot2` in the near future.
 
-```{r download-files}
+```{r package-load, eval=FALSE}
+if (!require("dplyr")) {
+  install.packages("dplyr")
+  library("dplyr")
+}
+
+if (!require("sf")) {
+  install.packages("sf")
+  library("sf")
+}
+
+# currently (early 2018) you need the development version of ggplot2
+# to work with sf
+if (!require("devtools")) {
+  install.packages("devtools")
+}
+devtools::install_github("tidyverse/ggplot2")
+library("ggplot2")
+```
+
+Next we need to download the files we'll be using.
+I've used regions as a simple example.
+We'll download the files to a temporary directory and get started.
+
+```{r download-files, eval=FALSE}
 tmp_dir <- tempdir()
 tmp     <- tempfile(tmpdir = tmp_dir, fileext = ".zip")
 
@@ -47,21 +71,56 @@ download.file(
 unzip(tmp, exdir = tmp_dir)
 ```
 
-### Loading shapefiles
+And now load the shapefile we just extracted and plot it to ensure it's worked:
 
-```{r load-shapefiles}
-# install.packages("sf")
-library("sf")
-
+```{r load-shapefiles, eval=FALSE}
 regions <- read_sf(tmp_dir, "england_gor_2011")
+ggplot(regions) + geom_sf()
 ```
 
-### Dissolving
-
-```{r dissolve-regions}
-england <- sf::st_union(regions)
-england
+```{r insert-regions-plot, echo=FALSE}
+blogdown::shortcode_html(
+  "figure",
+  src = "../../img/regions.png",
+  alt = "English regions",
+  caption = "English regions")
 ```
+
+Now lets have a look at the data (without the geometry):
+
+```{r inspect-regions-data, eval=FALSE}
+head(st_set_geometry(regions, NULL))
+```
+
+```{r inspect-regions-data-saved, echo=FALSE}
+regions_data <- readRDS("../../static/data/regions_data.RDS")
+head(regions_data)
+```
+
+There are now two ways to effectively dissolve the internal (region) boundaries.
+One can be used to preserve relevant data (i.e. numerical data), while the other simply drops all the data except the geometry column.
+I'll do one example of each.
+
+If you want to preserve the data frame I presume you have some data that's meaningful when aggregated, such as area or other numerical indicator that can be summed.
+My example data doesn't have this so lets create it:
+
+```{r calc-area, eval=FALSE}
+regions$area <- st_area(regions)
+head(st_set_geometry(regions, NULL))
+```
+
+Now we have something some data that's meaningful to group, we can just use `summarise()` to group the data and perform the dissolve:
+
+```{r dissolve-preserve, eval=FALSE}
+england <- 
+  regions %>% 
+  summarise(area = sum(area))
+```
+
+```{r plot-dissolve-preserve, eval=FALSE}
+ggplot(england) + geom_sf()
+```
+
 
 ## Original `rgdal` instructions
 
