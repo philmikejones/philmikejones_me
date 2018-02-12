@@ -66,15 +66,28 @@ ggplot(regions) + geom_sf()</code></pre>
 ## 4 E12000001               North East E12000001
 ## 5 E12000004            East Midlands E12000004
 ## 6 E12000003 Yorkshire and The Humber E12000003</code></pre>
-<p>There are now two ways to effectively dissolve the internal (region) boundaries. One can be used to preserve relevant data (i.e. numerical data), while the other simply drops all the data except the geometry column. I’ll do one example of each.</p>
-<p>If you want to preserve the data frame I presume you have some data that’s meaningful when aggregated, such as area or other numerical indicator that can be summed. My example data doesn’t have this so lets create it:</p>
+<p>Dissolves with <code>sf()</code> do not save the data frame (other than the geometry column) by default without specifying how to aggregate the data. Using area as an example:</p>
 <pre class="r"><code>regions$area &lt;- st_area(regions)
 head(st_set_geometry(regions, NULL))</code></pre>
+<pre><code>##        code                     name     label        area
+## 1 E12000006          East of England E12000006 19575024459
+## 2 E12000007                   London E12000007  1594720097
+## 3 E12000002               North West E12000002 14915248139
+## 4 E12000001               North East E12000001  8676411818
+## 5 E12000004            East Midlands E12000004 15814753263
+## 6 E12000003 Yorkshire and The Humber E12000003 15564151183</code></pre>
 <p>Now we have something some data that’s meaningful to group, we can just use <code>summarise()</code> to group the data and perform the dissolve:</p>
 <pre class="r"><code>england &lt;- 
   regions %&gt;% 
   summarise(area = sum(area))</code></pre>
 <pre class="r"><code>ggplot(england) + geom_sf()</code></pre>
+{{< figure src="../../img/dissolve-preserve-data.png" alt="Dissolve polygons" caption="Dissolve polygons" >}}
+<p>If you don’t have or want data to save the dissolve just create a column to <code>group_by()</code> so that the features (rows) that are to be grouped together are given the same data:</p>
+<pre class="r"><code>england &lt;- 
+  regions %&gt;% 
+  mutate(country = &quot;england&quot;) %&gt;% 
+  group_by(country) %&gt;% 
+  summarise()</code></pre>
 </div>
 </div>
 <div id="original-rgdal-instructions" class="section level2">

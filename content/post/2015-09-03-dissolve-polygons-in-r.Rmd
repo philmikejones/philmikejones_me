@@ -96,16 +96,24 @@ regions_data <- readRDS("../../static/data/regions_data.RDS")
 head(regions_data)
 ```
 
-There are now two ways to effectively dissolve the internal (region) boundaries.
-One can be used to preserve relevant data (i.e. numerical data), while the other simply drops all the data except the geometry column.
-I'll do one example of each.
+Dissolves with `sf()` do not save the data frame (other than the geometry column) by default without specifying how to aggregate the data.
+Using area as an example:
 
-If you want to preserve the data frame I presume you have some data that's meaningful when aggregated, such as area or other numerical indicator that can be summed.
-My example data doesn't have this so lets create it:
+```{r create-regions_area-data, echo=FALSE, eval=FALSE}
+regions$area <- st_area(regions)
+regions_area <- regions
+regions_area <- st_set_geometry(regions_area, NULL)
+saveRDS(regions_area, "static/data/regions_area.RDS")
+```
 
 ```{r calc-area, eval=FALSE}
 regions$area <- st_area(regions)
 head(st_set_geometry(regions, NULL))
+```
+
+```{r load-regions_area-data, echo=FALSE}
+regions_area <- readRDS("../../static/data/regions_area.RDS")
+head(regions_area)
 ```
 
 Now we have something some data that's meaningful to group, we can just use `summarise()` to group the data and perform the dissolve:
@@ -118,6 +126,31 @@ england <-
 
 ```{r plot-dissolve-preserve, eval=FALSE}
 ggplot(england) + geom_sf()
+```
+
+```{r save-dissolve-preserve-plot, eval=FALSE, echo=FALSE}
+ggsave(
+  "static/img/dissolve-preserve-data.png",
+  width = 254, units = "mm", dpi = 72
+)
+```
+
+```{r plot-saved-dissolve-preserve, echo=FALSE}
+blogdown::shortcode_html(
+  "figure",
+  src = "../../img/dissolve-preserve-data.png",
+  alt = "Dissolve polygons",
+  caption = "Dissolve polygons")
+```
+
+If you don't have or want data to save the dissolve just create a column to `group_by()` so that the features (rows) that are to be grouped together are given the same data:
+
+```{r dissolve-group-country, eval=FALSE}
+england <- 
+  regions %>% 
+  mutate(country = "england") %>% 
+  group_by(country) %>% 
+  summarise()
 ```
 
 
