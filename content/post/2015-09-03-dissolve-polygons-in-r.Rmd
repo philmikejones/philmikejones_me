@@ -156,8 +156,6 @@ england <-
 
 ## Original `rgdal` instructions
 
-Dissolving polygons is another fairly elementary GIS task that I need to perform regularly. With R this is can be a bit involved, but once done is fully reproducible and the code can be re-used. This post is essentially a companion piece to [Clipping polygons in R](https://philmikejones.me/post/2015-09-01-clipping-polygons-in-r/); I wrote both because I often forget how to complete these tasks in R.
-
 ### Getting started
 
 Let's gather together everything we need to complete this example. We need a shapefile of small geographies to &#8216;dissolve', a lookup table to tell us which polygons dissolve into which, and we need a couple of R spatial packages to run everything. Let's get started.
