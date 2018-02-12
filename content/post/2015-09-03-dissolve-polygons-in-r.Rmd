@@ -25,7 +25,6 @@ It has a number of advantages over these older packages:
 - It doesn't use the [S4 object system](http://adv-r.had.co.nz/S4.html), which means no more `@` slots.
 - `sf` functions are generally faster than `rgdal` counterparts.
 - `sf` data frames conform to [tidy data](http://r4ds.had.co.nz/tidy-data.html) principles and there are `dplyr` verbs to manipulate them.
-- `sf` functions do not drop the data frame, which many of the `rgdal` functions did.
 
 Overall, then, `sf` is much more convenient and efficient to work with, so I've updated my tutoral to use this new package.
 The older `rgdal` based tutorial will of course still work.
