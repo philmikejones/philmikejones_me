@@ -21,12 +21,14 @@ In the last couple of years the [`sf` package](https://cran.r-project.org/packag
 I also recommend it for anyone coming to GIS in R for the first time, as it's faster and more efficient than the packages it replaces.
 I've updated this tutorial to show how to clip with `sf`.
 
-First, install and load `sf` for loading the shapefiles, the `tidyverse` for manipulating the data, and `ggplot2` for plotting the maps:
+First, install and load `sf` for loading the shapefiles, the `dplyr` for manipulating the data, and `ggplot2` for plotting the maps.
+You could also load the complete tidyverse but this currently causes problems for loading the development version of `ggplot2` so use caution.
+Hopefully this issue will be resolved with an update to `ggplot2` in the near future.
 
 ```{r package-load, eval=FALSE}
-if (!require("tidyverse")) {
-  install.packages("tidyverse")
-  library("tidyverse")
+if (!require("dplyr")) {
+  install.packages("dplyr")
+  library("dplyr")
 }
 
 if (!require("sf")) {
