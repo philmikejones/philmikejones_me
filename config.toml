@@ -1,5 +1,5 @@
 # Site settings
-baseURL = "/"
+baseURL = "https://philmikejones.me"
 languageCode = "en-GB"
 title = "Phil Mike Jones"
 theme = "strange-case"
