@@ -1,218 +1,85 @@
-baseurl = "/"
+# Site settings
+baseURL = "/"
+languageCode = "en-GB"
 title = "Phil Mike Jones"
-copyright = "&copy; 2012-2018 Phil Mike Jones"
-theme = "hugo-academic"
-enableEmoji = true
-footnotereturnlinkcontents = "<sup>^</sup>"
-ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
-paginate = 10
+theme = "hugo-split-theme"
+disableKinds = ["section", "taxonomy", "taxonomyTerm", "RSS", "sitemap"]
 
-# Enable comments by entering your Disqus shortname
-disqusShortname = ""
-
-# Enable analytics by entering your Google Analytics tracking ID
+# Enter your tracking code to enable Google Analytics
 googleAnalytics = "UA-44027458-2"
 
-# Default language to use (if you setup multilingual support)
-# defaultContentLanguage = "en-GB"
-defaultContentLanguageInSubdir = false
-
-[outputs]
-  home = [ "HTML", "CSS" ]
-
-[blackfriday]
-  hrefTargetBlank = true
+# Copyright
+copyright = "&copy;2012-2018 Phil Mike Jones"
 
 [params]
-  # Color theme.
-  #   Choose from `default`, `ocean`, `forest`, or `coffee`.
-  color_theme = "coffee"
 
-  # Font style.
-  #   Choose from `default` or `classic`.
-  font = "default"
+  # Metadata for search engines and social sharing
+  author = "Phil Mike Jones"
+  description = "Blog posts on R, geography, GIS, mapping, cartography, and occasionally photography."
+  shareImage = "images/social.jpg"
+  twitterHandle = "philmikejones"
 
-  # Your details.
-  name = "Phil Mike Jones"
-  role = "Research Associate"
+  # Favicon
+  favicon = "favicon.ico"
 
-  # Organizations/Affiliations.
-  #   Separate multiple entries with a comma, using the form: `[ {name="Org1", url=""}, {name="Org2", url=""} ]`.
-  organizations = [ { name = "University of Sheffield", url = "" } ]
+  # Section - Visual
+  [params.visual]
 
-  gravatar = false  # Get your avatar from Gravatar.com? (true/false)
-  avatar = "phil.jpeg"  # Specify an avatar image (in `static/img/` folder) or delete value to disable avatar.
-  email = "phil.jones@sheffield.ac.uk"
-  address = "School of Law, Bartolomé House, University of Sheffield, Winter Street, Sheffield, S3 7ND"
-  # office_hours = "Monday 10:00 to 13:00 or email for appointment"
-  phone = "+44 (0)114 22 26862"
-  # skype = "echo123"
-  # telegram = ""
+    # Image
+    [params.visual.image]
+      enable = true
+      file = "images/background.jpeg"
+      position = "center center"
 
-  # Enable Keybase in Contact section by entering your keybase.io username.
-  keybase = ""
+    # Video
+    [params.visual.video]
+      enable = false
+      mute = true
+      file = "videos/background.mp4"
+      # youtubeId = "dk9uNWPP7EA"
 
-  # Date format (refer to Go's date format: http://flippinggodateformat.com )
-  #   Examples: "Mon, Jan 2, 2006" or "2006-01-02"
-  date_format = "Jan 2, 2006"
+  # Links
 
-  # Show estimated reading time for posts?
-  reading_time = false
+  [[params.links]]
+    [params.links.list1]
+      heading = "Code"
 
-  # Enable global LaTeX math rendering?
-  #   If false, you can enable it locally on a per page basis.
-  math = false
+      [[params.links.list1.link]]
+        text = "Github"
+        url = "https://github.com/philmikejones"
 
-  # Highlight.js options
-  #   highlight
-  #     Enable global source code highlighting?  If false, you can
-  #     override it for a particular page in that page's preamble.
-  #
-  #     Example: highlight = true
-  #
-  #   highlight_languages
-  #     Add support for highlighting additional languages. Support for
-  #     languages mentioned here will be included in all pages. You
-  #     can also set this variable for a particular page in that
-  #     page's preamble.
-  #
-  #     Example: highlight_languages = ["go", "lisp", "ocaml"]
-  #
-  #   highlight_style
-  #     Choose a different CSS style for highlighting source
-  #     code. Setting this option in a page's preamble has no
-  #     effect.
-  #
-  #     Example: highlight_style = "github-gist"
-  #
-  #   For the list of supported languages and styles, see:
-  #   https://cdnjs.com/libraries/highlight.js/
-  #
-  #   For more info on the highlighting options, see:
-  #   https://sourcethemes.com/academic/post/writing-markdown-latex/#highlighting-options
-  highlight = true
-  highlight_languages = []
-  # highlight_style = "github"
-
-  # Enable native social sharing buttons?
-  sharing = true
-
-  # Link custom CSS and JS assets
-  #   (relative to /static/css and /static/js respectively)
-  custom_css = []
-  custom_js  = []
-
-  # Publication types.
-  #   Used to categorize publications.
-  #   The index of the publication type in the list is used as its unique numerical identifier.
-  #   The numeric ID is used in a publication's frontmatter to categorize it.
-  #   The language can be edited below.
-  #   For multi-lingual sites, copy this block to each language section at the end of this file.
-  publication_types = [
-    'Uncategorized',           # 0
-    'Conference proceedings',  # 1
-    'Journal',                 # 2
-    'Work in progress',        # 3
-    'Technical report',        # 4
-    'Book',                    # 5
-    'Book chapter'             # 6
-  ]
-
-  # Social/Academic Networking
-  #
-  # Icon pack "fa" includes the following social network icons:
-  #
-  #   twitter, weibo, linkedin, github, facebook, pinterest, google-plus,
-  #   youtube, instagram, soundcloud
-  #
-  #   For email icon, use "fa" icon pack, "envelope" icon, and
-  #   "mailto:your@email.com" as the link.
-  #
-  #   Full list: https://fortawesome.github.io/Font-Awesome/icons/
-  #
-  # Icon pack "ai" includes the following academic network icons:
-  #
-  #   google-scholar, arxiv, orcid, researchgate, mendeley
-  #
-  #   Full list: https://jpswalsh.github.io/academicons/
-
-  # [[params.social]]
-  #   icon = "envelope"
-  #   icon_pack = "fa"
-  #   link = "mailto:phil.jones@sheffield.ac.uk"
-
-  [[params.social]]
-    icon = "twitter"
-    icon_pack = "fa"
-    link = "//twitter.com/philmikejones"
-
-  [[params.social]]
-    icon = "github"
-    icon_pack = "fa"
-    link = "//github.com/philmikejones"
-
-  [[params.social]]
-    icon = "stack-overflow"
-    icon_pack = "fa"
-    link = "//stackoverflow.com/users/3022126/phil"
-
-  [[params.social]]
-    icon = "flickr"
-    icon_pack = "fa"
-    link = "//www.flickr.com/photos/phil-jones/"
-
- [[params.social]]
-    icon = "orcid"
-    icon_pack = "ai"
-    link = "//orcid.org/0000-0001-5173-3245"
+      [[params.links.list1.link]]
+        text = "Stack Exchange"
+        url = "https://stackexchange.com/users/3624034"
 
 
+  [[params.links]]
+    [params.links.list2]
+      heading = "Academic"
+
+      [[params.links.list2.link]]
+        text = "ORCID"
+        url = "https://orcid.org/0000-0001-5173-3245"
 
 
-# Navigation Links
-#   To link a homepage widget, specify the URL as a hash `#` followed by the filename of the
-#     desired widget in your `content/home/` folder.
-#   The weight parameter defines the order that the links will appear in.
+  [[params.links]]
+    [params.links.list3]
+      heading = "Photography"
 
-[[menu.main]]
-  name = "Home"
-  url = "#about"
-  weight = 1
+      [[params.links.list3.link]]
+        text = "Flickr"
+        url = "https://www.flickr.com/people/phil-jones/"
 
-[[menu.main]]
-  name = "Projects"
-  url = "#projects"
-  weight = 2
 
-# [[menu.main]]
-#   name = "Publications"
-#   url = "#publications_selected"
-#   weight = 6
+  [[params.links]]
+    [params.links.list4]
+      heading = "Social"
 
-[[menu.main]]
-  name = "Posts"
-  url = "#posts"
-  weight = 3
+      [[params.links.list4.link]]
+          text = "Twitter"
+          url = "https://twitter.com/philmikejones"
 
-# [[menu.main]]
-#   name = "Teaching"
-#   url = "#teaching"
-#   weight = 5
-
-[[menu.main]]
-  name = "Contact"
-  url = "#contact"
-  weight = 6
-
-# Taxonomies.
-[taxonomies]
-  tag = "tags"
-  category = "categories"
-  publication_type = "publication_types"
-
-# Languages
-#   Create a [languages.X] block for each language you want, where X is the language ID.
-
-# Configure the English version of the website.
-[Languages.en]
-  languageCode = "en-UK"
+# The original template is released under the Creative Commons Attribution 3.0 License.
+# Please keep the original attribution link when using for your own project.
+# If you'd like to use the template without the attribution, you can check out
+# the license option via the template author's website: https://onepagelove.com/split
