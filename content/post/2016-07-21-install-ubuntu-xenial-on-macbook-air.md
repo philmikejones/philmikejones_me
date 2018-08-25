@@ -20,7 +20,7 @@ My Macbook is a mid-2011 (4,2) so your mileage may vary if you have a different 
 
 There are essentially three stages to the installation:
 
-1. Download the necessary software and create a bootable USB
+1. Download the necessary software
 1. Install rEFInd
 1. Install Ubuntu
 1. (optional) Tweak your Ubuntu installation
@@ -31,9 +31,9 @@ There are essentially three stages to the installation:
 We need to download two packages, Ubuntu itself and rEFInd.
 
 1. Download Ubuntu from the [Ubuntu website](https://www.ubuntu.com/download/desktop).
-    a. I strongly recommend you use the latest Long Term Support (LTS) version.
-    a. You almost certainly want the desktop version.
-    a. You want the 64-bit version.
+    1. I strongly recommend you use the latest Long Term Support (LTS) version.
+    1. You almost certainly want the desktop version.
+    1. You want the 64-bit version.
 1. Download the binary zip version of [rEFInd](http://www.rodsbooks.com/refind/getting.html).
 
 
@@ -53,13 +53,13 @@ There are installation instructions in the zip folder you downloaded, but essent
 ## Install Ubuntu
 
 1. Prepare a USB stick that's bootable for a Mac.
-    a. The USB stick should be at least 4GB in size.
-    a. To make it bootable, first format it as 'MS-DOS (FAT)' or ExFAT (not sure if it makes a difference).
+    1. The USB stick should be at least 4GB in size.
+    1. To make it bootable, first format it as 'MS-DOS (FAT)' or ExFAT (not sure if it makes a difference).
 1. Open a terminal in (or navigate to) the folder containing your Ubuntu iso.
 1. Convert the .iso into an .img with: `hdiutil convert -format UDRW -o ubuntu-16.04-desktop-amd64.img ubuntu-16.04-desktop-amd64.iso`
 1. Unmount (but do not remove) the USB drive to be able to copy the .img onto it. 
-    a. Find out your USB drive's drive identifier with `diskutil list`. It might be `/dev/disk2`, for example.
-    a. Unmount it with `diskutil unmountDisk /dev/disk2` (replacing `/dev/disk2` with the actual disk identifier from step 7.1.
+    1. Find out your USB drive's drive identifier with `diskutil list`. It might be `/dev/disk2`, for example.
+    1. Unmount it with `diskutil unmountDisk /dev/disk2` (replacing `/dev/disk2` with the actual disk identifier from step 7.1.
 1. Copy the .img with `sudo dd if=ubuntu-16.04-desktop-amd64.img.dmg of=/dev/rdisk2 bs=1m` (replacing `rdisk2` with the drive identifier obtained in 7.1).
 1. Eject with `diskutil eject /dev/disk2` then remove the drive.
 1. Shutdown your Mac. Insert the USB drive and turn the computer back on (you don't need to hold option at the chime). The rEFInd menu should have an option to boot from USB.
