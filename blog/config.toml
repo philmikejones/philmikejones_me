@@ -1,4 +1,4 @@
-baseURL = "blog"
+baseURL = "https://blog.philmikejones.me"
 languageCode = "en-GB"
 title = "Phil Mike Jones - Blog"
 theme = "hugo-nuo"
