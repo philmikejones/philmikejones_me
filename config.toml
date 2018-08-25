@@ -2,7 +2,7 @@
 baseURL = "/"
 languageCode = "en-GB"
 title = "Phil Mike Jones"
-theme = "hugo-split-theme"
+theme = "strange-case"
 disableKinds = ["section", "taxonomy", "taxonomyTerm", "RSS", "sitemap"]
 
 # Enter your tracking code to enable Google Analytics
