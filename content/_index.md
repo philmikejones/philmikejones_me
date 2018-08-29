@@ -1,2 +1,4 @@
-## Front Page Content
-`beautifulhugo` supports content on your front page. Edit `/content/_index.md` to change what appears here. Delete `/content/_index.md` if you don't want any content here.
+I write code to analyse spatial and non--spatial data.
+[bio >](bio/)
+
+I write tutorials on tools and techniques used for spatial analysis, mostly using `R` and QGIS.

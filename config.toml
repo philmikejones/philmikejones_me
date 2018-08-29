@@ -18,7 +18,7 @@ googleAnalytics = "UA-44027458-2"
 [Params]
   # Set a different text for the header on the home page
   homeTitle = "Phil Mike Jones"
-  subtitle = "I write code to analyse spatial and non-spatial data"
+  # subtitle = "I write code to analyse spatial and non-spatial data"
   logo = "img/phil.jpeg"
   favicon = "img/favicon.ico"
   dateFormat = "2 January 2006"

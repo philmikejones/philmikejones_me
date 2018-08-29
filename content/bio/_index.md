@@ -7,6 +7,8 @@ comments: false
 I write code to analyse spatial and non--spatial data sets.
 You can see some of my [code projects](https://github.com/philmikejones) on GitHub.
 
+I am the author of [`rakeR`](https://cran.r-project.org/package=rakeR), an `R` package for simulating spatial data.
+
 I have a PhD in human geography.
 You can [read the manuscript](http://etheses.whiterose.ac.uk/id/eprint/19283)  or [view the source code](https://github.com/philmikejones/thesis).
 
