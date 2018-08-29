@@ -1,10 +1,10 @@
 ---
 title: Geocoding with Google Maps API
-author: ~
-date: '2017-05-30'
+author: Phil Mike Jones
+date: 2017-05-30
 slug: geocoding-with-google-maps-api
-categories: []
-tags: []
+categories: [code]
+tags: [geocode]
 ---
 
 You need to build a URL to query the Google Places API, one URL per place. Judging by the Places API guide you need to:

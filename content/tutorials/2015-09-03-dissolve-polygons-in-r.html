@@ -14,19 +14,25 @@ tags:
 
 
 
-<p>Dissolving polygons is another fairly elementary GIS task that I need to perform regularly. With R this is can be a bit involved, but once done is fully reproducible and the code can be re-used. This post is essentially a companion piece to <a href="https://philmikejones.me/post/2015-09-01-clipping-polygons-in-r/">Clipping polygons in R</a>; I wrote both because I often forget how to complete these tasks in R.</p>
+<p>Dissolving polygons is another fairly elementary GIS task that I need to perform regularly.
+With R this is can be a bit involved, but once done is fully reproducible and the code can be re-used.
+This post is essentially a companion piece to <a href="https://philmikejones.me/post/2015-09-01-clipping-polygons-in-r/">Clipping polygons in R</a>; I wrote both because I often forget how to complete these tasks in R.</p>
 <div id="update-2018-02-07---using-sf" class="section level2">
 <h2>Update 2018-02-07 - using <code>sf</code></h2>
-<p>In the last couple of years or so the <a href="https://cran.r-project.org/package=sf"><code>sf</code> package</a> has replaced most of the functionality of <code>rgdal</code> and <code>rgeos</code>. It has a number of advantages over these older packages:</p>
+<p>In the last couple of years or so the <a href="https://cran.r-project.org/package=sf"><code>sf</code> package</a> has replaced most of the functionality of <code>rgdal</code> and <code>rgeos</code>.
+It has a number of advantages over these older packages:</p>
 <ul>
 <li>It doesn’t use the <a href="http://adv-r.had.co.nz/S4.html">S4 object system</a>, which means no more <code>@</code> slots.</li>
 <li><code>sf</code> functions are generally faster than <code>rgdal</code> counterparts.</li>
 <li><code>sf</code> data frames conform to <a href="http://r4ds.had.co.nz/tidy-data.html">tidy data</a> principles and there are <code>dplyr</code> verbs to manipulate them.</li>
 </ul>
-<p>Overall, then, <code>sf</code> is much more convenient and efficient to work with, so I’ve updated my tutoral to use this new package. The older <code>rgdal</code> based tutorial will of course still work.</p>
+<p>Overall, then, <code>sf</code> is much more convenient and efficient to work with, so I’ve updated my tutoral to use this new package.
+The older <code>rgdal</code> based tutorial will of course still work.</p>
 <div id="getting-started" class="section level3">
 <h3>Getting started</h3>
-<p>First, install and load <code>sf</code> for loading the shapefiles, <code>dplyr</code> for manipulating the data, and <code>ggplot2</code> for plotting the maps. You could also load the complete tidyverse but this currently causes problems for loading the development version of <code>ggplot2</code> so use caution. Hopefully this issue will be resolved with an update to <code>ggplot2</code> in the near future.</p>
+<p>First, install and load <code>sf</code> for loading the shapefiles, <code>dplyr</code> for manipulating the data, and <code>ggplot2</code> for plotting the maps.
+You could also load the complete tidyverse but this currently causes problems for loading the development version of <code>ggplot2</code> so use caution.
+Hopefully this issue will be resolved with an update to <code>ggplot2</code> in the near future.</p>
 <pre class="r"><code>if (!require(&quot;dplyr&quot;)) {
   install.packages(&quot;dplyr&quot;)
   library(&quot;dplyr&quot;)
@@ -44,7 +50,9 @@ if (!require(&quot;devtools&quot;)) {
 }
 devtools::install_github(&quot;tidyverse/ggplot2&quot;)
 library(&quot;ggplot2&quot;)</code></pre>
-<p>Next we need to download the files we’ll be using. I’ve used regions as a simple example. We’ll download the files to a temporary directory and get started.</p>
+<p>Next we need to download the files we’ll be using.
+I’ve used regions as a simple example.
+We’ll download the files to a temporary directory and get started.</p>
 <pre class="r"><code>tmp_dir &lt;- tempdir()
 tmp     &lt;- tempfile(tmpdir = tmp_dir, fileext = &quot;.zip&quot;)
 
@@ -66,7 +74,8 @@ ggplot(regions) + geom_sf()</code></pre>
 ## 4 E12000001               North East E12000001
 ## 5 E12000004            East Midlands E12000004
 ## 6 E12000003 Yorkshire and The Humber E12000003</code></pre>
-<p>Dissolves with <code>sf()</code> do not save the data frame (other than the geometry column) by default without specifying how to aggregate the data. Using area as an example:</p>
+<p>Dissolves with <code>sf()</code> do not save the data frame (other than the geometry column) by default without specifying how to aggregate the data.
+Using area as an example:</p>
 <pre class="r"><code>regions$area &lt;- st_area(regions)
 head(st_set_geometry(regions, NULL))</code></pre>
 <pre><code>##        code                     name     label        area

@@ -17,8 +17,12 @@ tags:
 <p>Clipping polygons is a basic GIS task. It involves removing unneeded polygons outside of an area of interest. For example, you might want to study all local authorities (LADs) in the Yorkshire and the Humber region but can only obtain shapefiles that contain all the LADs in the UK. Removing the LADs outside of Yorkshire and the Humber could be achieved by ‘clipping’ the shapefile of LADs, using the extent of the larger region as a template. In R this takes a bit of work, but is quite possible with a few lines of code and has the advantage of being fully <a href="https://en.wikipedia.org/wiki/Reproducibility">reproducible</a>.</p>
 <div id="update-february-2018" class="section level2">
 <h2>Update February 2018</h2>
-<p>In the last couple of years the <a href="https://cran.r-project.org/package=sf"><code>sf</code> package</a> has been released and has been steadily maturing, to the point that it’s now my preferred package for GIS in R, replacing <code>rgdal</code> and <code>rgeos</code>. I also recommend it for anyone coming to GIS in R for the first time, as it’s faster and more efficient than the packages it replaces. I’ve updated this tutorial to show how to clip with <code>sf</code>.</p>
-<p>First, install and load <code>sf</code> for loading the shapefiles, <code>dplyr</code> for manipulating the data, and <code>ggplot2</code> for plotting the maps. You could also load the complete tidyverse but this currently causes problems for loading the development version of <code>ggplot2</code> so use caution. Hopefully this issue will be resolved with an update to <code>ggplot2</code> in the near future.</p>
+<p>In the last couple of years the <a href="https://cran.r-project.org/package=sf"><code>sf</code> package</a> has been released and has been steadily maturing, to the point that it’s now my preferred package for GIS in R, replacing <code>rgdal</code> and <code>rgeos</code>.
+I also recommend it for anyone coming to GIS in R for the first time, as it’s faster and more efficient than the packages it replaces.
+I’ve updated this tutorial to show how to clip with <code>sf</code>.</p>
+<p>First, install and load <code>sf</code> for loading the shapefiles, <code>dplyr</code> for manipulating the data, and <code>ggplot2</code> for plotting the maps.
+You could also load the complete tidyverse but this currently causes problems for loading the development version of <code>ggplot2</code> so use caution.
+Hopefully this issue will be resolved with an update to <code>ggplot2</code> in the near future.</p>
 <pre class="r"><code>if (!require(&quot;dplyr&quot;)) {
   install.packages(&quot;dplyr&quot;)
   library(&quot;dplyr&quot;)
