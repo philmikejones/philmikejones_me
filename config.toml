@@ -77,12 +77,12 @@ googleAnalytics = "UA-44027458-2"
 
 [[menu.main]]
     name = "Tutorials"
-    url = "categories/tutorials/"
+    url = "/tutorials/"
     weight = 2
 
 [[menu.main]]
     name = "Talks"
-    url = "categories/talks/"
+    url = "/talks/"
     weight = 3
 
 # [[menu.main]]
