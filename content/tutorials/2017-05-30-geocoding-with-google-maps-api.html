@@ -1,0 +1,140 @@
+---
+title: Geocoding with Google Geocoding API and Googleway
+author: Phil Mike Jones
+date: 2017-05-30
+slug: geocoding-google-geocoding-api-googleway
+categories: [tutorials]
+tags: [geocode, googleway, api, rstats]
+---
+
+
+
+<p>Geocoding is the process of taking an address, postcode, or other human–readable identifier and converting it into coordinates.
+Here I use the <a href="https://developers.google.com/maps/documentation/geocoding/intro">Google Geocoding API</a> which I access within R with the <a href="https://cran.r-project.org/package=googleway"><code>googleway</code></a> package.</p>
+<!--more-->
+<div id="obtain-a-google-geocoding-api-key" class="section level2">
+<h2>Obtain a Google Geocoding API key</h2>
+<p>To use the Google Geocoding API service we need an API key:</p>
+<ul>
+<li>Open the <a href="https://developers.google.com/maps/documentation/geocoding/get-api-key">Get API Key</a> page</li>
+<li>Click Get Started</li>
+<li>When asked, you need to enable the <code>Places</code> product. Tick this and press Continue</li>
+<li>Select or create a project. If this is the first time you’re using this service you will need to create a new project. Type a project name and press Next</li>
+<li>You’ll need to set up a billing account and provide a debit or credit card. You can limit the API key use, but I can’t see a way around having to provide it.</li>
+<li>Follow the prompts and click Next or Continue</li>
+<li>You’ll be told, ‘You’re all set’, and be presented with your API key.</li>
+</ul>
+<div class="figure">
+<img src="../../img/enable-geocoding-platform.png" alt="Google Geocoding set up" />
+<p class="caption">Google Geocoding set up</p>
+</div>
+<div id="restrict-the-api-key" class="section level3">
+<h3>Restrict the API key</h3>
+<p>At this point it’s worth limiting your API key to prevent misuse.</p>
+<ul>
+<li>You can <a href="https://cloud.google.com/apis/docs/capping-api-usage">set up a cap on usage</a> to make sure you don’t overspend. Recommended.</li>
+<li>You <em>should</em> <a href="https://cloud.google.com/docs/authentication/api-keys?hl=en-GB#api_key_restrictions">restrict use of your API key</a>, for example for requests to only originate from your domain or computer.
+<ul>
+<li>Click on Navigation menu (<i class="fa fa-bars"></i>) &gt; APIs &amp; Services &gt; Credentials</li>
+<li>Click on Edit API Key (<i class="fa fa-edit"></i>)</li>
+<li>At the very least, click on API restrictions and restrict your API key to only the Geocoding API</li>
+<li>You can optionally set Application restrictions, such as permitting queries only from a specific IP address (useful if you have a fixed IP)</li>
+</ul></li>
+</ul>
+</div>
+</div>
+<div id="using-your-key" class="section level2">
+<h2>Using your key</h2>
+<p>I find the easiest way to use the API key is to store it in a text file that is not kept with your data analysis.
+That way you can still share the data analysis script or results without sharing the key.</p>
+<p>For example, I add <code>keys/</code> to <code>.gitignore</code> so that folder isn’t tracked and shared, and place my key in there.
+Load it with <code>readLines()</code>:</p>
+<pre class="r"><code>gkey = readLines(&quot;../../keys/geocode_api_key.txt&quot;, n = 1)</code></pre>
+</div>
+<div id="packages" class="section level2">
+<h2>Packages</h2>
+<p>If you need to, install googleway:</p>
+<pre class="r"><code>install.packages(&quot;googleway&quot;)</code></pre>
+</div>
+<div id="set-up-your-humanreadable-addresses" class="section level2">
+<h2>Set up your human–readable addresses</h2>
+<p>You now need to wrangle your address data into a form the Geocoding API can understand.
+For example, it’s common to have a data base with a field for town and a field for country, like the <code>addresses</code> data base below:</p>
+<table style="width:36%;">
+<colgroup>
+<col width="18%" />
+<col width="18%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center">town</th>
+<th align="center">country</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">Sheffield</td>
+<td align="center">England</td>
+</tr>
+<tr class="even">
+<td align="center">Manchester</td>
+<td align="center">England</td>
+</tr>
+<tr class="odd">
+<td align="center">Glasgow</td>
+<td align="center">Scotland</td>
+</tr>
+<tr class="even">
+<td align="center">Cardiff</td>
+<td align="center">Wales</td>
+</tr>
+</tbody>
+</table>
+<p>The Geocoding API expects a single string per query, so we need to join the two items.
+As it happens, <code>paste0()</code> is vectorised:</p>
+<pre class="r"><code>address_strings = paste0(addresses$town, &quot;, &quot;, addresses$country)
+address_strings</code></pre>
+<pre><code>## [1] &quot;Sheffield, England&quot;  &quot;Manchester, England&quot; &quot;Glasgow, Scotland&quot;  
+## [4] &quot;Cardiff, Wales&quot;</code></pre>
+<p><code>addresses</code> is now ready to geocode.</p>
+</div>
+<div id="storing-the-results" class="section level2">
+<h2>Storing the results</h2>
+<p>I don’t know of a vectorised way to geocode a number of addresses, so I’m going to use a <code>for()</code> loop.
+We’re limited to the number of times we can query the API server per second anyway, so this isn’t going to be a problem.</p>
+<p>As with all <code>for()</code> loops in R, we should create an empty vector and replace values rather than append each time.
+See <a href="https://csgillespie.github.io/efficientR/programming.html#memory-allocation">Efficient R Programming</a> for why this is a good idea.</p>
+<pre class="r"><code>lat = vector(&quot;numeric&quot;, length = nrow(addresses))
+lng = vector(&quot;numeric&quot;, length = nrow(addresses))</code></pre>
+</div>
+<div id="geocode" class="section level2">
+<h2>Geocode</h2>
+<p>To perform the actual geocoding, we loop over <code>address_strings</code> and append the latitude and longitude coordinates to our pre–allocated vectors.
+I also check that the query returned <code>OK</code>; if it hasn’t I simply enter a missing value (<code>NA</code>) which can be fixed later (manually if necessary).
+Finally, sometimes the API returns multiple results so I’ve selected the first one.
+This tends to happen if the query isn’t specific enough (for example ‘Manchester’ might return Manchester, UK and Manchester, New Hampshire, USA).
+Again, these can be fixed later if necessary.</p>
+<pre class="r"><code>for (i in 1:nrow(addresses)) {
+  coord = googleway::google_geocode(address_strings[i], key = gkey)
+
+  if (coord$status == &quot;OK&quot;) {
+    coord = googleway::geocode_coordinates(coord)
+    lat[i] = coord$lat[1]  # sometimes returns multiple coordinates
+    lng[i] = coord$lng[1]  # sometimes returns multiple coordinates
+  } else {
+    lat[i] = NA
+    lng[i] = NA
+  }
+
+}</code></pre>
+<p>We can then append our coordinates to our original data frame (<code>addresses</code>):</p>
+<pre class="r"><code>addresses$lat = lat
+addresses$lng = lng
+
+addresses</code></pre>
+<pre><code>##         town  country      lat       lng
+## 1  Sheffield  England 53.38113 -1.470085
+## 2 Manchester  England 53.48076 -2.242631
+## 3    Glasgow Scotland 55.86424 -4.251806
+## 4    Cardiff    Wales 51.48158 -3.179090</code></pre>
+</div>
