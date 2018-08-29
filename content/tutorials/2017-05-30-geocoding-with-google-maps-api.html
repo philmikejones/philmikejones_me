@@ -1,0 +1,64 @@
+---
+title: Geocoding with Google Geocoding API and Googleway
+author: Phil Mike Jones
+date: 2017-05-30
+slug: geocoding-google-geocoding-api-googleway
+categories: [tutorials]
+tags: [geocode]
+---
+
+
+
+<p>Geocoding is the process of taking an address, postcode, or other human–readable identifier and converting it into coordinates.
+Here I use the <a href="https://developers.google.com/maps/documentation/geocoding/intro">Google Geocoding API</a> which I access within R with the <a href="https://cran.r-project.org/package=googleway"><code>googleway</code></a> package.</p>
+<!--more-->
+<p>To use the Google Geocoding API service we need an API key:</p>
+<ul>
+<li>Open the <a href="https://developers.google.com/maps/documentation/geocoding/get-api-key">Get API Key</a> page</li>
+<li>Click Get Started</li>
+<li>When asked, you need to enable the <code>Places</code> product. Tick this and press Continue</li>
+<li>Select or create a project. If this is the first time you’re using this service you will need to create a new project. Type a project name and press Next</li>
+<li>You’ll need to set up a billing account and provide a debit or credit card. You can set it up so that your budget is £0/$0 so it will never be charged, but I can’t see a way around having to provide it.</li>
+<li>Follow the prompts and click Next or Continue</li>
+<li>You’ll be told, ‘You’re all set’, and be presented with your API key.</li>
+</ul>
+<div class="figure">
+<img src="enable-geocoding-platform.png" alt="“Google Geocoding set up”" />
+<p class="caption">“Google Geocoding set up”</p>
+</div>
+<p>You need to build a URL to query the Google Places API, one URL per place. Judging by the Places API guide you need to:</p>
+<ol style="list-style-type: decimal">
+<li><a href="https://developers.google.com/places/web-service/get-api-key">Get an API key</a></li>
+<li>Obtain a <code>placeid</code> from a places search, then</li>
+<li>Use this <code>placeid</code> to get information from the Place Details API.</li>
+</ol>
+<p>The base URL is:</p>
+<pre><code>https://maps.googleapis.com/maps/api/place/nearbysearch/output?parameters</code></pre>
+<p><code>JSON</code> is the recommended output format, and we need to specify the following <a href="https://developers.google.com/places/web-service/search">parameters</a>:</p>
+<ol style="list-style-type: decimal">
+<li><code>key</code>: your API key</li>
+<li><code>location</code>: lat/long (NOT long/lat!) coordinates of the centre of
+your search area</li>
+<li><code>radius</code>: the radius to search in metres</li>
+<li><code>keyword</code> or <code>name</code>: keywords or name of the place to search</li>
+</ol>
+<p>So build this up in R:</p>
+<pre><code>places_key = &quot;Your key goes here&quot;
+url = paste0(&quot;https://maps.googleapis.com/maps/api/place/&quot;,
+             &quot;nearbysearch/json?key=&quot;, places_key,
+             &quot;&amp;location=41.699042,-72.864847&quot;,
+             &quot;&amp;radius=5000&quot;,  # max = 50,000
+             &quot;&amp;name=ebm-papst&quot;)</code></pre>
+<p>Query the URL with</p>
+<pre><code>install.packages(&quot;jsonlite&quot;)  # if not already installed
+result &lt;- jsonlite::fromJSON(url)</code></pre>
+<p>The <code>placeid</code>(s) is/are then in <code>result$results$placeid</code>.</p>
+<p>Plug this <code>placeid</code> into a Google Places Details API query:</p>
+<pre><code>details_id  &lt;- result$results$placeid</code></pre>
+<p>If there is more than one <code>placeid</code> you can specify which one you want with <code>result$results$placeid[1]</code>, for example for the first <code>placeid</code></p>
+<pre><code>details_url &lt;- paste0(&quot;https://maps.googleapis.com/maps/api/place/&quot;,
+                      &quot;details/json?&quot;,
+                      &quot;key=&quot;, places_key,
+                      &quot;&amp;placeid=&quot;, details_id)
+
+details &lt;- jsonlite::fromJSON(details_url)</code></pre>

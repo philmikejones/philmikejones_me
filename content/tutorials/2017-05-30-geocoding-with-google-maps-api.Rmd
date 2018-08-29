@@ -1,11 +1,28 @@
 ---
-title: Geocoding with Google Maps API
+title: Geocoding with Google Geocoding API and Googleway
 author: Phil Mike Jones
 date: 2017-05-30
-slug: geocoding-with-google-maps-api
-categories: [code]
+slug: geocoding-google-geocoding-api-googleway
+categories: [tutorials]
 tags: [geocode]
 ---
+
+Geocoding is the process of taking an address, postcode, or other human--readable identifier and converting it into coordinates.
+Here I use the [Google Geocoding API](https://developers.google.com/maps/documentation/geocoding/intro) which I access within R with the [`googleway`](https://cran.r-project.org/package=googleway) package.
+
+<!--more-->
+
+To use the Google Geocoding API service we need an API key:
+
+- Open the [Get API Key](https://developers.google.com/maps/documentation/geocoding/get-api-key) page
+- Click Get Started
+- When asked, you need to enable the `Places` product. Tick this and press Continue
+- Select or create a project. If this is the first time you're using this service you will need to create a new project. Type a project name and press Next
+- You'll need to set up a billing account and provide a debit or credit card. You can set it up so that your budget is £0/$0 so it will never be charged, but I can't see a way around having to provide it.
+- Follow the prompts and click Next or Continue
+- You'll be told, 'You're all set', and be presented with your API key.
+
+!["Google Geocoding set up"](enable-geocoding-platform.png)
 
 You need to build a URL to query the Google Places API, one URL per place. Judging by the Places API guide you need to:
 
