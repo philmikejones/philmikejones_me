@@ -80,6 +80,11 @@ googleAnalytics = "UA-44027458-2"
     url = "categories/tutorials/"
     weight = 2
 
+[[menu.main]]
+    name = "Talks"
+    url = "categories/talks/"
+    weight = 3
+
 # [[menu.main]]
 #     identifier = "samples"
 #     name = "Samples"
@@ -106,4 +111,4 @@ googleAnalytics = "UA-44027458-2"
 [[menu.main]]
     name = "Bio"
     url = "bio/"
-    weight = 3
+    weight = 4
