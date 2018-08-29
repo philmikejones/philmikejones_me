@@ -4,8 +4,6 @@ title: Bio
 comments: false
 ---
 
-# Bio
-
 I write code to analyse spatial and non--spatial data sets.
 You can see some of my [code projects](https://github.com/philmikejones) on GitHub.
 
