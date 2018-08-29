@@ -1,12 +1,13 @@
 ---
 title: Travelling by Train with a Physical Disability
 date: 2011-11-13
-author: philmikejones
+author: Phil Mike Jones
+draft: true
 categories:
   - Works
 ---
 
-In early November I travelled to London to attend the [sociologists outside academia](http://www.britsoc.co.uk/specialisms/SOA.htm) (SOA) group which I co-convene with a few colleagues. The trip to London was uneventful, but the return trip turned out to be eye-opening in more ways than one. I experienced first hand what travelling is like for a wheelchair user and was both pleased at how helpful most staff we encountered were, but also surprised and disappointed by how difficult it was to get assistance in the first place and at the attitudes of some station staff.
+In early November I travelled to London to attend the [sociologists outside academia](http://www.britsoc.co.uk/specialisms/SOA.htm) (SOA) group which I co-convene with a few colleagues. The trip to London was uneventful, but the return trip turned out to be eye--opening in more ways than one. I experienced first hand what travelling is like for a wheelchair user and was both pleased at how helpful most staff we encountered were, but also surprised and disappointed by how difficult it was to get assistance in the first place and at the attitudes of some station staff.
 
 
 One of the SOA group members is a wheelchair user. I hadn't previously met her, but she is intelligent, thoughtful, and has a frightening number of anecdotes to share about times people have treated her as unintelligent or unable. From meeting her this is unjustified and, I assume, based on assumptions or preconceptions about people with disabilities. The basis of such preconceptions escape me because if a disability is physical, why assume the person's mind is also affected?
