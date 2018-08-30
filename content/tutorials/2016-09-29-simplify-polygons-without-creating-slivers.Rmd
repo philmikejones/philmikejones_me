@@ -93,8 +93,8 @@ So the simplification has definitely worked in terms of file size!
 Next lets compare the plots:
 
 ```{r compare-plots, include=TRUE, echo=TRUE, cache=TRUE}
-rgn_simp$simplified = TRUE
-rgn$simplified      = FALSE
+rgn_simp$simplified = "Simplified"
+rgn$simplified      = "Original"
 
 rgn = reduce(
   list(rgn, rgn_simp),
