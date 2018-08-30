@@ -1,9 +1,10 @@
 ---
 title: "Install sf package in Ubuntu"
+author: "Phil Mike Jones"
 date: 2018-08-29
 subtitle: ""
 categories: "tutorials"
-tags: ["rstats", "gis"]
+tags: ["rstats", "gis", "sf"]
 ---
 
 If you receive errors about `udunits2` or `gdal-config` when installing `sf` in Ubuntu, this tutorial shows you how to fix them.

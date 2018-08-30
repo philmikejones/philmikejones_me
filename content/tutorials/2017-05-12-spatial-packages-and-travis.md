@@ -1,18 +1,17 @@
 ---
-title: Spatial packages and Travis
-author: ~
-date: '2017-05-12'
-slug: spatial-packages-and-travis
-categories: [GIS, Code, rstats]
-tags: [sf, simple features, tmap, travis]
+title: "Spatial packages and Travis"
+author: "Phil Mike Jones"
+date: 2017-05-12
+categories: ["tutorials"]
+tags: ["sf", "travis", "rstats", "gis"]
 ---
 
-A number of `R` spatial libraries have been updated in the last couple of weeks, and this has played havoc with my Travis-CI build.
+A number of `R` spatial libraries have been updated in the last couple of weeks, and this has played havoc with my Travis--CI build.
 I had still been using Ubuntu Trusty with Travis which uses old versions of libraries like `rgdal` and `rgeos`, so I needed to move to updated versions of these.
-In addition `sf` has now become a dependency for a number of spatial packages like tmap, and this uses `libudunits2-dev` which isn't installed by default.
+In addition `sf` has now become a dependency for a number of spatial packages like `tmap`, and this uses `libudunits2-dev` which isn't installed by default.
 
 To solve all these problems at once as simply as possible, I switched to using a docker container within Travis so I could use an Ubunutu 16.04 ('Xenial') build.
-This meant I was able to upgrade to more up-to-date versions of most packages.
+This meant I was able to upgrade to more up--to--date versions of most packages.
 I installed the `ubuntugis-unstable` ppa to use the most recent versions of `gdal`, `geos`, and `proj`.
 I finally installed `libudunits2` so I could update `sf`.
 
@@ -20,7 +19,7 @@ The docker container is a bit slower (6 minutes vs 3 minutes) but will hopefully
 
 The final `.travis.yml` looked like this (I've removed my notification options and coverage report token for clarity):
 
-```
+```yaml
 sudo: required
 
 services:

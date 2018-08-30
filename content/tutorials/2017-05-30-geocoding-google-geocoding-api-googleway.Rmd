@@ -1,10 +1,9 @@
 ---
-title: Geocoding with Google Geocoding API and Googleway
-author: Phil Mike Jones
+title: "Geocoding with Google Geocoding API and Googleway"
+author: "Phil Mike Jones"
 date: 2017-05-30
-slug: geocoding-google-geocoding-api-googleway
-categories: [tutorials]
-tags: [geocode, googleway, api, rstats]
+categories: ["tutorials"]
+tags: ["geocode", "googleway", "api", "rstats"]
 ---
 
 ```{r packages, include=FALSE, echo=FALSE}

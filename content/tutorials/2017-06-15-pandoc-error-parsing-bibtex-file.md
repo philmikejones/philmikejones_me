@@ -1,10 +1,9 @@
 ---
-title: Pandoc error parsing BibTeX file
-author: Phil Mike Jones
+title: "Pandoc error parsing BibTeX file"
+author: "Phil Mike Jones"
 date: 2017-06-15
-slug: pandoc-error-parsing-bibtex-file
-categories: [tutorials]
-tags: [latex, bibtex, pandoc]
+categories: ["tutorials"]
+tags: ["latex", "bibtex", "pandoc"]
 ---
 
 I get the following error so often (and I always forget how to solve it) that I thought I'd post a solution.
