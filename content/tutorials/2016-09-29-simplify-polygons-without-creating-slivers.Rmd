@@ -1,105 +1,108 @@
 ---
-title: Simplify polygons without creating slivers
+title: "Simplify polygons without creating slivers"
 date: 2016-09-29
-author: philmikejones
-categories:
-  - Code
-  - GIS
-  - rstats
-tags:
-  - geometry
-  - gis
-  - polygons
-  - simplify
+author: "Phil Mike Jones"
+categories: ["tutorials"]
+tags: ["rstats", "rmapshaper", "grass", "v.generalize", "gis", "geometry"]
 ---
 
-```{r setup, include=FALSE}
-library("tidyverse")
-library("sf")
-library("ggplot2")
-library("rmapshaper")
-library("pryr")
-
-post_dir = "2016-09-29-simplify-polygons-without-creating-slivers/"
-dir.create(post_dir, showWarnings = FALSE)
-```
-
-```{r prep-images, include=FALSE}
-if (!file.exists("../../static/img/rgn_simplify.png")) {
-  
-  tmp_dir = tempdir()
-  tmp = tempfile(pattern = "", tmpdir = tmp_dir, fileext = ".zip")
-  
-  download.file(
-    paste0(
-      "https://borders.ukdataservice.ac.uk/ukborders/easy_download/",
-      "prebuilt/shape/infuse_rgn_2011.zip"),
-    destfile = tmp)
-  
-  unzip(tmp, exdir = tmp_dir)
-  
-  rgn      = read_sf(tmp_dir, "infuse_rgn_2011")
-  rgn_simp = ms_simplify(rgn, keep = 0.01)
-  
-  rgn$simp      = "Unsimplified"
-  rgn_simp$simp = "Simplified"
-  
-  
-  if (!file.exists(paste0(post_dir, "rgn_sizes.rds"))) {
-  
-    rgn_size      = pryr::object_size(rgn)
-    rgn_simp_size = pryr::object_size(rgn_simp)
-    
-    saveRDS(
-      c(rgn_size, rgn_simp_size),
-      paste0(post_dir, "rgn_sizes.rds"))
-  
-  }
-      
-  stopifnot(
-    all.equal(colnames(rgn), colnames(rgn_simp))
-  )
-  
-  rgn = reduce(list(rgn, rgn_simp), rbind)
-  
-  ggplot(rgn) +
-    geom_sf() +
-    theme_bw() + 
-    facet_wrap( ~ simp)
-  ggsave(
-    "rgn_simplify.png", path = "../../static/img",
-    dpi = "screen", units = "in", width = 10)
-
-  unlink(c(tmp, tmp_dir))
-  
-}
-```
-
-```{r file-sizes, include=FALSE}
-rgn_sizes = readRDS(paste0(post_dir, "rgn_sizes.rds"))
-```
-
 When you download geographical data the polygons are often highly detailed, leading to large file sizes and slow processing times.
+This tutorials shows you how to simplify detailed polygons in R and QGIS without creating slivers (gaps) between the resultant shapes.
+
+<!--more-->
+
+When you download boundary data, for example from the [census boundary data](https://census.ukdataservice.ac.uk/get-data/boundary-data) page, the polygons are usually highly detailed.
 Often this detail is unnecessary if you're not intending to produce small--scale maps.
+
 Most thematic maps, for example, tend to compare large geographies such as nations or regions, so the detail is unnecessary.
 Likewise, if you're producing your map for use on the web, for example as an interactive visualisation, too much detail can slow the rendering and responsiveness of your app.
 
-Compare the following two plots:
+Downloading pre--simplified versions or trying to simplify the polygons yourself in QGIS or ArcGIS can be unsatisfactory because some simplification functions introduce 'slivers' or gaps between the simplified geometries.
 
-```{r compare-unsimp-simp, include=TRUE, echo=FALSE}
-knitr::include_graphics("../../img/rgn_simplify.png")
-```
+There are at least two approaches to obtaining simplified geometries that are topologically--aware (i.e., you don't end up with any gaps).
 
-It's practically impossible to tell the difference between the two at this scale, which would be perfectly practical for a web visualisation.
-The unsimplified file on the left is `r format(rgn_sizes[1] / 1024 / 1024, digits = 2)`MB, while the simplified image on the right is only `r format(rgn_sizes[2] / 1024 / 1024, digits = 2)`MB!
+> Update 30 August 2018 - it looks like as of QGIS v3 the default simplify function is now topologically aware.
 
-With many simplification tools---such as those provided by QGIS or `rgeos`---slivers and gaps are introduced between polygons.
-The `R` package [`rmapshaper`](https://cran.r-project.org/package=rmapshaper) simplifies polygons loaded in `sf` or `sp` form without introducing slivers and gaps:
 
-```{r example-simplify, eval=FALSE}
+## QGIS - GRASS::`v.generalize`
+
+One approach is to use the `v.generalize` function in GRASS, and the easiest way to do this is through QGIS.
+
+1. Open QGIS and load your shapefile that you'd like to generalise/simplify.
+1. Open the '<i class="fa fa-cog"></i> Toolbox' from the Processing menu
+1. Open the GRASS > Vector (v.*) menu
+1. Select `v.generalize`
+
+!["'v.generalize' dialogue box"](../../img/v_generalize.png)
+
+By default this will save a temporary layer which you can then export, or you can specify a filename.
+With the default values I was able to simplify a shapefile from 35MB to 11MB, or about $\frac{1}{3}$ of the original size without introducing any gaps.
+
+
+## R - `rmapshaper::ms_simplify()`
+
+Traditionally simplifcation was performed with the `rgeos` package in R, but this was not topologically--aware.
+The package [`rmapshaper`](https://cran.r-project.org/package=rmapshaper) simplifies polygons without introducing slivers and gaps, and is compatible with [`sf`](https://cran.r-project.org/package=sf) and `sp` objects.
+
+Install and load some required packages (I'm assuming you already have `tidyverse` and `sf` installed):
+
+```{r packages, include=TRUE, echo=TRUE, message=FALSE}
+# install.packages("rmapshaper")  # install if necessary
+library("tidyverse")
 library("sf")
 library("rmapshaper")
-
-eg = read_sf("eg.shp")
-eg = ms_simplify(eg)
 ```
+
+Download and unzip the detailed shapefile for simplification:
+
+```{r download, include=TRUE, echo=TRUE, cache=TRUE}
+tmp_dir = tempdir()
+tmp     = tempfile(pattern = "", tmpdir = tmp_dir, fileext = ".zip")
+
+download.file(
+    paste0(
+      "https://borders.ukdataservice.ac.uk/ukborders/easy_download/",
+      "prebuilt/shape/infuse_rgn_2011.zip"
+    ),
+    destfile = tmp
+)
+
+unzip(tmp, exdir = tmp_dir)
+```
+
+Read the shapefile:
+
+```{r read-shapefile, include=TRUE, echo=TRUE, cache=TRUE}
+rgn = read_sf(tmp_dir, "infuse_rgn_2011")
+```
+
+And simplify:
+
+```{r simplify, include=TRUE, echo=TRUE, cache=TRUE}
+rgn_simp = ms_simplify(rgn, keep = 0.01)
+```
+  
+And compare the sizes (for this I've used the `pryr` package but you don't need to do this step):
+
+```{r compare-size, include=TRUE, echo=TRUE, cache=TRUE}
+pryr::object_size(rgn)
+pryr::object_size(rgn_simp)
+```    
+
+So the simplification has definitely worked in terms of file size!
+Next lets compare the plots:
+
+```{r compare-plots, include=TRUE, echo=TRUE, cache=TRUE}
+rgn_simp$simplified = TRUE
+rgn$simplified      = FALSE
+
+rgn = reduce(
+  list(rgn, rgn_simp),
+  rbind
+)
+
+ggplot(rgn) + geom_sf() + facet_wrap( ~ simplified)
+```
+
+At this scale I can't tell the difference, which would be perfect for web visualisation and even for printing.
+Even if your plots are being printed, you'll save yourself a lot of rendering time over the unsimplified files.
