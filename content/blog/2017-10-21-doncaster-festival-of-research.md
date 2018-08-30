@@ -1,14 +1,16 @@
 ---
 title: "Doncaster Festival of Research"
+author: "Phil Mike Jones"
 date: 2017-10-21
-slug: "2017-10-21-doncaster-festival-of-research"
+categories: ["blog"]
 tags: []
-categories: [PhD]
 ---
 
 ![Doncaster Festival of Research 2017](../../img/doncaster-festival-of-research.jpeg)
 
 On Friday 20 October I was delighted to present a poster at the [Doncaster Festival of Research 2017 Fringe Event](https://www.eventbrite.co.uk/e/doncasters-festival-of-research-fringe-events-tickets-38004578718#) in Denaby and Cadeby Miner's Welfare in Denaby Main.
+
+<!--more-->
 
 With my poster I tried to summarise my doctoral research, which is challenging because it's probably most relevant for a policy and practitioner audience.
 I hope it was useful for the people who came to talk to me about it.
