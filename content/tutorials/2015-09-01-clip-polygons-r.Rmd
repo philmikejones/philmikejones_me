@@ -14,7 +14,7 @@ Removing all the LADs outside of the Yorkshire and the Humber can be achieved by
 
 First, install and load `sf` for loading the shapefiles, and `tidyverse` for manipulating the data and plotting the maps.
 
-```{r packages, message=FALSE, eval=FALSE}
+```{r packages, message=FALSE}
 # install.packages("tidyverse")
 # install.packages("sf")
 
@@ -62,8 +62,8 @@ Let's check these have loaded correctly with a plot:
 
 ```{r create-regions-plot, cache=TRUE}
 ggplot() + 
-  geom_sf(data = reg, colour = "light gray") +
-  geom_sf(data = lad, colour = "dark gray")
+  geom_sf(data = lad, colour = "light gray", fill = NA) +
+  geom_sf(data = reg, colour = "dark gray", fill = NA)
 ```
 
 To clip the LADs to a region, use `sf::st_contains()` with `sparse = FALSE` argument:

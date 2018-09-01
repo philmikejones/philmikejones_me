@@ -48,8 +48,8 @@ lad = read_sf(  # Local Authority District
 )</code></pre>
 <p>Let’s check these have loaded correctly with a plot:</p>
 <pre class="r"><code>ggplot() + 
-  geom_sf(data = reg, colour = &quot;light gray&quot;) +
-  geom_sf(data = lad, colour = &quot;dark gray&quot;)</code></pre>
+  geom_sf(data = lad, colour = &quot;light gray&quot;, fill = NA) +
+  geom_sf(data = reg, colour = &quot;dark gray&quot;, fill = NA)</code></pre>
 <p><img src="/tutorials/2015-09-01-clip-polygons-r_files/figure-html/create-regions-plot-1.png" width="672" /></p>
 <p>To clip the LADs to a region, use <code>sf::st_contains()</code> with <code>sparse = FALSE</code> argument:</p>
 <pre class="r"><code>yh = 

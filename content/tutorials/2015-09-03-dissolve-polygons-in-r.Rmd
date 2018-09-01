@@ -14,7 +14,7 @@ A dissolve removes internal boundaries, leaving only the outline.
 Install and load the packages we'll need.
 I use `sf` because it's more intuitive than `rgdal`, and I'm loading `tidyverse` because it plays well with `sf`.
 
-```{r packages, message=FALSE, eval=FALSE}
+```{r packages, message=FALSE}
 # install.packages(c("tidyverse", "sf"))
 
 library("tidyverse")
