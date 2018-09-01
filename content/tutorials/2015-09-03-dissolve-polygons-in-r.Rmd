@@ -46,8 +46,8 @@ ggplot(regions) + geom_sf()
 Now lets have a look at the data (without the geometry):
 
 ```{r inspect-regions-data, cache=TRUE}
-regions %>% 
-  st_set_geometry(NULL) %>% 
+regions %>%
+  st_set_geometry(NULL) %>%
   glimpse()
 ```
 
@@ -62,8 +62,8 @@ regions
 Now we have something some data that's meaningful to group, we can just use `summarise()` to group the data and perform the dissolve:
 
 ```{r dissolve-preserve, cache=TRUE}
-england <- 
-  regions %>% 
+england <-
+  regions %>%
   summarise(area = sum(area))
 ```
 
@@ -74,10 +74,10 @@ ggplot(england) + geom_sf()
 If you don't have or want data to save the dissolve just create a column to `group_by()` so that the features (rows) that are to be grouped together are given the same data:
 
 ```{r dissolve-group-country, cache=TRUE}
-england <- 
-  regions %>% 
-  mutate(country = "england") %>% 
-  group_by(country) %>% 
+england <-
+  regions %>%
+  mutate(country = "england") %>%
+  group_by(country) %>%
   summarise()
 ```
 

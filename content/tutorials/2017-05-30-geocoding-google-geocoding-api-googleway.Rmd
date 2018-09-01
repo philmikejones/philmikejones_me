@@ -61,8 +61,8 @@ gkey = readLines("../../keys/geocode_api_key.txt", n = 1)
 
 If you need to, install googleway:
 
-```{r install, eval=FALSE}
-install.packages("googleway")
+```{r install}
+# install.packages("googleway")
 ```
 
 

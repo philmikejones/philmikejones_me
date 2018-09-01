@@ -1,0 +1,185 @@
+---
+title: "Clip polygons in R"
+date: 2015-09-01
+author: "Phil Mike Jones"
+categories: ["tutorials"]
+tags: ["R", "rstats", "GIS", "sf", "clip", "polygon-clip"]
+---
+
+
+
+<p>Clipping polygons is a common GIS task.
+For example, you might want to study local authorities (LADs) in the Yorkshire and the Humber region but can only obtain a shapefile with all the LADs in England.
+Removing all the LADs outside of the Yorkshire and the Humber can be achieved by ‘clipping’ the LADs, using the extent of the larger region as a template.</p>
+<!--more-->
+<p>First, install and load <code>sf</code> for loading the shapefiles, and <code>tidyverse</code> for manipulating the data and plotting the maps.</p>
+<pre class="r"><code># install.packages(&quot;tidyverse&quot;)
+# install.packages(&quot;sf&quot;)
+
+library(&quot;tidyverse&quot;)
+library(&quot;sf&quot;)</code></pre>
+<p>Then download and unzip our test data (shapefiles of English regions and local authorities):</p>
+<pre class="r"><code>tmp_dir = tempdir()
+
+# a region shapefile for England ~6MB
+tmp_reg = tempfile(tmpdir = tmp_dir, fileext = &quot;.zip&quot;)
+download.file(
+  &quot;https://borders.ukdataservice.ac.uk/ukborders/easy_download/prebuilt/shape/England_gor_2011.zip&quot;,
+  destfile = tmp_reg
+)
+unzip(tmp_reg, exdir = tmp_dir)
+
+# local authorities for England ~ 
+tmp_lad = tempfile(tmpdir = tmp_dir, fileext = &quot;.zip&quot;)
+download.file(
+  &quot;https://borders.ukdataservice.ac.uk/ukborders/easy_download/prebuilt/shape/England_lad_2011.zip&quot;,
+  destfile = tmp_lad
+)
+unzip(tmp_lad, exdir = tmp_dir)</code></pre>
+<p>Now load these files ready for clipping:</p>
+<pre class="r"><code>reg = read_sf(  # regions
+  dsn = tmp_dir,
+  layer = &quot;england_gor_2011&quot;
+)
+
+lad = read_sf(  # Local Authority District
+  dsn = tmp_dir,
+  layer = &quot;england_lad_2011&quot;
+)</code></pre>
+<p>Let’s check these have loaded correctly with a plot:</p>
+<pre class="r"><code>ggplot() + 
+  geom_sf(data = lad, colour = &quot;light gray&quot;, fill = NA) +
+  geom_sf(data = reg, colour = &quot;dark gray&quot;, fill = NA)</code></pre>
+<p><img src="/tutorials/2015-09-01-clip-polygons-r_files/figure-html/create-regions-plot-1.png" width="672" /></p>
+<p>To clip the LADs to a region, use <code>sf::st_contains()</code> with <code>sparse = FALSE</code> argument:</p>
+<pre class="r"><code>yh = 
+  reg %&gt;% 
+  filter(name == &quot;Yorkshire and The Humber&quot;)
+
+yh_lads = 
+  lad %&gt;% 
+  filter(st_contains(yh, ., sparse = FALSE))</code></pre>
+<p>And a plot to check the clip succeeded:</p>
+<pre class="r"><code>ggplot(yh_lads) + geom_sf()</code></pre>
+<p><img src="/tutorials/2015-09-01-clip-polygons-r_files/figure-html/create-yh_lads-plot-1.png" width="672" /></p>
+<p>We can also check the data are still included in the <code>yh_lads</code> object (without the geometry):</p>
+<pre class="r"><code>yh_lads</code></pre>
+<pre><code>## Simple feature collection with 21 features and 4 fields
+## geometry type:  MULTIPOLYGON
+## dimension:      XY
+## bbox:           xmin: 363191.2 ymin: 378555.1 xmax: 542343 ymax: 519226.1
+## epsg (SRID):    NA
+## proj4string:    +proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 +datum=OSGB36 +units=m +no_defs
+## # A tibble: 21 x 5
+##    code    name       altname label                               geometry
+##    &lt;chr&gt;   &lt;chr&gt;      &lt;chr&gt;   &lt;chr&gt;                     &lt;MULTIPOLYGON [m]&gt;
+##  1 E07000… Hambleton  &lt;NA&gt;    E0700… (((420403.7 487934, 420403.8 487934,…
+##  2 E07000… Selby      &lt;NA&gt;    E0700… (((449563.5 448780.2, 449563.5 44878…
+##  3 E08000… Doncaster  &lt;NA&gt;    E0800… (((447460 404259.3, 447455.8 404261.…
+##  4 E07000… Scarborou… &lt;NA&gt;    E0700… (((478796.4 519204.3, 478800.3 51920…
+##  5 E08000… Bradford   &lt;NA&gt;    E0800… (((401481.6 443899, 401472.5 443917.…
+##  6 E07000… Harrogate  &lt;NA&gt;    E0700… (((436734.8 478785.4, 436734.6 47876…
+##  7 E07000… Ryedale    &lt;NA&gt;    E0700… (((466763.2 457589.2, 466763.2 45758…
+##  8 E07000… Richmonds… &lt;NA&gt;    E0700… (((411525.3 511326.6, 411531.8 51132…
+##  9 E06000… North Eas… &lt;NA&gt;    E0600… (((529614.4 410900.2, 529622.3 41089…
+## 10 E08000… Leeds      &lt;NA&gt;    E0800… (((419443 436664, 419443.2 436664.9,…
+## # ... with 11 more rows</code></pre>
+<div id="original-post-rgdal" class="section level2">
+<h2>Original post (<code>rgdal</code>)</h2>
+<p>I’ve archived the original post based on <code>rgdal</code> and reproduced the instructions below, but I strongly recommend using <code>sf</code> for new code.</p>
+<pre class="r"><code># install.packages(&quot;rgdal&quot;) # uncomment and run if not already installed
+# install.packages(&quot;rgeos&quot;)
+
+# If you run in to trouble installing rgdal and rgeos on Linux (Ubuntu) see:
+# https://philmikejones.me/post/2014-07-14-installing-rgdal-in-r-on-linux/
+
+require(&quot;rgdal&quot;)
+require(&quot;rgeos&quot;)
+
+
+tmp_dir = tempdir()
+
+tmp_reg = tempfile(tmpdir = tmp_dir, fileext = &quot;.zip&quot;)
+download.file(
+  &quot;https://census.edina.ac.uk/ukborders/easy_download/prebuilt/shape/England_gor_2011.zip&quot;,
+  destfile = tmp_reg
+)  # ~6.4MB
+
+tmp_lad = tempfile(tmpdir = tmp_dir, fileext = &quot;.zip&quot;)
+download.file(
+  &quot;https://census.edina.ac.uk/ukborders/easy_download/prebuilt/shape/England_lad_2011.zip&quot;,
+  destfile = tmp_lad
+)  # ~25MB
+unzip(tmp_reg, exdir = tmp_dir)
+unzip(tmp_lad, exdir = tmp_dir)
+
+# I recommend loading the shapefiles with readOGR() in the rgdal package
+
+regions &lt;- readOGR(tmp_dir, &quot;england_gor_2011&quot;)
+lads &lt;- readOGR(&quot;.&quot;, &quot;england_lad_2011&quot;)
+
+# Extract Yorkshire and the Humber
+regions &lt;- regions[regions@data$name == &quot;Yorkshire and The Humber&quot;, ]
+
+# Clip the LADs
+yh_lads &lt;- gIntersection(regions, lads, byid = TRUE, drop_lower_td = TRUE)
+
+
+# Easy, but we&#39;re not finished yet.
+# The clipped polygons no longer contain a data frame because the gIntersection
+# doesn&#39;t (and can&#39;t) know which data frame items to save in to the new object.
+# This means we must add them back in manually, but even this is relatively
+# straight-forward.
+
+# Recreate the data frame
+# The row names for the clipped polygons are a concatenation of the regions row
+# name and the LAD row names. These are in the form x yyyy where x is the
+# region row name (in our case always 5, because Yorkshire and The Humber was
+# row 5) and yyyy is the LAD row name.
+row.names(yh_lads) &lt;- gsub(&quot;5 &quot;, &quot;&quot;, row.names(yh_lads))
+
+keep &lt;- row.names(yh_lads)
+
+# For the sake of simplicity I also change the polygon IDs so they are 
+# consistent with their respective row names. This step is probably optional, 
+# but I prefer to ensure they match so I have a consistent set of IDs to work
+# with later on. If you choose not to do this I don&#39;t think you&#39;ll run into 
+# any problems but YMMV
+yh_lads &lt;- spChFIDs(yh_lads, keep)
+
+# Now we create a copy of the LAD dataframe and filter it so that it only
+#  contains the rows we want to keep, using row names to perform the match:
+yh_data &lt;- as.data.frame(lads@data[keep, ])
+
+# Finally we create a SpatialPolygonsDataFrame object with our clipped polygons
+#  and our subsetted data frame:
+yh_lads &lt;- SpatialPolygonsDataFrame(yh_lads, yh_data)
+
+# Check it worked with a plot
+plot(yh_lads)
+
+# and check the attributes:
+yh_lads@data
+##           CODE                        NAME ALTNAME
+##  2   E07000164                   Hambleton    
+##  8   E07000169                       Selby    
+##  9   E08000017                   Doncaster    
+##  37  E07000168                 Scarborough    
+##  39  E08000032                    Bradford    
+##  43  E07000165                   Harrogate    
+##  105 E07000167                     Ryedale    
+##  124 E07000166               Richmondshire    
+##  162 E06000012     North East Lincolnshire    
+##  165 E08000035                       Leeds    
+##  175 E07000163                      Craven    
+##  204 E08000033                  Calderdale    
+##  207 E06000013          North Lincolnshire    
+##  214 E08000019                   Sheffield    
+##  225 E06000010 Kingston upon Hull, City of    
+##  245 E06000011    East Riding of Yorkshire    
+##  248 E06000014                        York    
+##  251 E08000036                   Wakefield    
+##  254 E08000034                    Kirklees    
+##  297 E08000016                    Barnsley    
+##  320 E08000018                   Rotherham    </code></pre>
+</div>
