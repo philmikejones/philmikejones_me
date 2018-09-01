@@ -35,8 +35,8 @@ unzip(tmp, exdir = tmp_dir)</code></pre>
 ggplot(regions) + geom_sf()</code></pre>
 <p><img src="/tutorials/2015-09-03-dissolve-polygons-in-r_files/figure-html/load-shapefiles-1.png" width="672" /></p>
 <p>Now lets have a look at the data (without the geometry):</p>
-<pre class="r"><code>regions %&gt;% 
-  st_set_geometry(NULL) %&gt;% 
+<pre class="r"><code>regions %&gt;%
+  st_set_geometry(NULL) %&gt;%
   glimpse()</code></pre>
 <pre><code>## Observations: 9
 ## Variables: 3
@@ -66,16 +66,16 @@ regions</code></pre>
 ## 8 E12000… West Midl… E1200… (((325576.3 238639.3, 325570.7 23865… 1300380…
 ## 9 E12000… South East E1200… (((429042.2 84841.15, 429056.2 84832… 1941297…</code></pre>
 <p>Now we have something some data that’s meaningful to group, we can just use <code>summarise()</code> to group the data and perform the dissolve:</p>
-<pre class="r"><code>england &lt;- 
-  regions %&gt;% 
+<pre class="r"><code>england &lt;-
+  regions %&gt;%
   summarise(area = sum(area))</code></pre>
 <pre class="r"><code>ggplot(england) + geom_sf()</code></pre>
 <p><img src="/tutorials/2015-09-03-dissolve-polygons-in-r_files/figure-html/plot-dissolve-preserve-1.png" width="672" /></p>
 <p>If you don’t have or want data to save the dissolve just create a column to <code>group_by()</code> so that the features (rows) that are to be grouped together are given the same data:</p>
-<pre class="r"><code>england &lt;- 
-  regions %&gt;% 
-  mutate(country = &quot;england&quot;) %&gt;% 
-  group_by(country) %&gt;% 
+<pre class="r"><code>england &lt;-
+  regions %&gt;%
+  mutate(country = &quot;england&quot;) %&gt;%
+  group_by(country) %&gt;%
   summarise()</code></pre>
 </div>
 <div id="original-rgdal-instructions" class="section level2">

@@ -46,7 +46,7 @@ The package [`rmapshaper`](https://cran.r-project.org/package=rmapshaper) simpli
 
 Install and load some required packages (I'm assuming you already have `tidyverse` and `sf` installed):
 
-```{r packages, include=TRUE, echo=TRUE, message=FALSE}
+```{r packages, message=FALSE, eval=FALSE}
 # install.packages("rmapshaper")  # install if necessary
 library("tidyverse")
 library("sf")

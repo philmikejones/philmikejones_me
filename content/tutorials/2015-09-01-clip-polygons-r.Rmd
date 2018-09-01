@@ -7,13 +7,14 @@ tags: ["R", "rstats", "GIS", "sf", "clip", "polygon-clip"]
 ---
 
 Clipping polygons is a common GIS task.
-It involves removing unneeded polygons outside of an area of interest.
-For example, you might want to study all local authorities (LADs) in the Yorkshire and the Humber region but can only obtain shapefiles that contain all the LADs in the UK.
-Removing the LADs outside of Yorkshire and the Humber could be achieved by 'clipping' the LADs, using the extent of the larger region as a template.
+For example, you might want to study local authorities (LADs) in the Yorkshire and the Humber region but can only obtain a shapefile with all the LADs in England.
+Removing all the LADs outside of the Yorkshire and the Humber can be achieved by 'clipping' the LADs, using the extent of the larger region as a template.
+
+<!--more-->
 
 First, install and load `sf` for loading the shapefiles, and `tidyverse` for manipulating the data and plotting the maps.
 
-```{r packages}
+```{r packages, message=FALSE, eval=FALSE}
 # install.packages("tidyverse")
 # install.packages("sf")
 
