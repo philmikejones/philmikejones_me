@@ -17,13 +17,13 @@ With Ubuntu Xenial the VPNC GUI no longer seems to work but I've managed to piec
 1. Edit this file with `sudo gedit /etc/vpnc/shef.conf` (or use whichever text editor you prefer)
 1. Enter the following details, taken from https://www.sheffield.ac.uk/cics/vpn/linux
 
-> IPSec gateway:  vpn.shef.ac.uk
-> IPSec ID:       unishef
-> IPSec secret:   unishef
-> Xauth username: [uni-username]
-> Xauth password: [remote-access-password]
+    - IPSec gateway:  `vpn.shef.ac.uk`
+    - IPSec ID:       `unishef`
+    - IPSec secret:   `unishef`
+    - Xauth username: `[uni-username]`
+    - Xauth password: `[remote-access-password]`
 
 You need to [set up a remote access password](https://sheffield.ac.uk/cics/password).
 
-To connect, use `sudo vpnc shef`.
-To disconnect, use `sudo vpnc-disconnect`.
+To connect, type `sudo vpnc shef`.
+To disconnect, type `sudo vpnc-disconnect`.
