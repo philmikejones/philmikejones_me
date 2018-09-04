@@ -25,10 +25,10 @@ The [UK Data Service](http://ukdataservice.ac.uk/) provide a small number of [te
 [<img class="alignleft wp-image-1077 size-full" src="https://i1.wp.com/philmikejones.me/wp-content/uploads/2014/05/github-mark-32px.png?fit=32%2C32" alt="Github" data-recalc-dims="1" />](https://github.com/philmikejones/regdiag)You can download the file and set up a working directory in R yourself, or I've set up a project folder on github called &#8216;[regdiag](https://github.com/philmikejones/regdiag)&#8216; with the necessary data file, R code, and .Rproj file for easy set up.
 
   1. [Download the regdiag github project](https://github.com/philmikejones/regdiag/archive/master.zip) and extract the zip to a folder of your choice (or use github to clone the project if you know what you're doing).
-  2. Open the <tt>regdiag.Rproj</tt> file in R Studio, and it will configure a workspace for you.
-  3. Open the <tt>regdiag.R</tt> file and run lines 39 &#8211; 48. These install and configure the required package <tt>sjPlot</tt> (to use SPSS files) and then loads the data file.
+  2. Open the `regdiag.Rproj` file in R Studio, and it will configure a workspace for you.
+  3. Open the `regdiag.R` file and run lines 39 &#8211; 48. These install and configure the required package `sjPlot` (to use SPSS files) and then loads the data file.
 
-I'm using the sjPlot rather then foreign package (although both open SPSS files adequately) because of the sjPlot function to view the variable names and value labels, <tt>sji.viewSPSS()</tt>. Try this now by typing:
+I'm using the sjPlot rather then foreign package (although both open SPSS files adequately) because of the sjPlot function to view the variable names and value labels, `sji.viewSPSS()`. Try this now by typing:
 
 <pre class="brush: r; title: ; notranslate" title="">sji.viewSPSS(lcfs)</pre>
 

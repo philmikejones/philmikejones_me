@@ -19,7 +19,7 @@ I didn't want to write formal unit tests that required setting up new folders an
 
 ## Writing informal tests formally
 
-For R users a great tool I found is the <tt>testthat</tt> package by Hadley Wickham. It's available on CRAN so is as easy as any other package to install. Stick near the top of your script:
+For R users a great tool I found is the `testthat` package by Hadley Wickham. It's available on CRAN so is as easy as any other package to install. Stick near the top of your script:
 
 <pre class="brush: r; title: ; notranslate" title="">install.packages("testthat")
 library("testthat")</pre>
@@ -38,7 +38,7 @@ test_that("df correct number of columns (variables) loaded?", {
   expect_that(ncol(df), equals(20))
 })</pre>
 
-Clearly this is a trivial example and you probably wouldn't test to this detail, but this does show you the outline of the test format. I use a new context for each group of tests focused around an individual object or function. For example, I would write a new context when no longer testing <tt>df</tt>. Within each context you can then have as many test\_that() calls, and within each test\_that() calls you can have as many expect_that() calls as you like. This effectively allows you to give your test groups &#8216;headings' to remind you of their purpose and structure. These headings are useful when the tests fail because they form part of the error message returned to you so you can easily spot what's wrong.
+Clearly this is a trivial example and you probably wouldn't test to this detail, but this does show you the outline of the test format. I use a new context for each group of tests focused around an individual object or function. For example, I would write a new context when no longer testing `df`. Within each context you can then have as many test\_that() calls, and within each test\_that() calls you can have as many expect_that() calls as you like. This effectively allows you to give your test groups &#8216;headings' to remind you of their purpose and structure. These headings are useful when the tests fail because they form part of the error message returned to you so you can easily spot what's wrong.
 
 The advantage of using testthat in this way is that it stops execution of the script if any tests fail. Assuming you write good tests, you can be confident that if the script finishes that there are no errors.
 
