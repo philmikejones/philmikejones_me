@@ -9,6 +9,8 @@ tags: ["publication", "book-chapter", "spatial-microsimulation", "agent-based mo
 
 Our book chapter (co--authored with [Dimitris Ballas](https://twitter.com/dimitris_ballas) and [Tom Broomhead](https://twitter.com/tw_broomhead)) was published last month in the edited collection, "The practice of spatial analysis: Essays in memory of Professor Pavlos Kanaroglou".
 
+<!--more-->
+
 ![The Practice of Spatial Analysis](../../img/practice-spatial-analysis-cover.png)
 
 Full BibTeX reference below:
