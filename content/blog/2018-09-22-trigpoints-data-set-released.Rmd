@@ -30,7 +30,7 @@ trigpoints
 
 And a quick (ish) plot:
 
-```{r plot, out.width="720px"}
+```{r plot, out.width="778px"}
 plot(trigpoints, max.plot = 1)
 ```
 
@@ -67,7 +67,7 @@ Now we can plot these on a basemap:
 library("leaflet")
 
 map =
-  leaflet(trigpoints, width = 720) %>%
+  leaflet(trigpoints, width = 778) %>%
   addMarkers(popup = ~ paste0(
     htmltools::htmlEscape(name),
     "<br />",
