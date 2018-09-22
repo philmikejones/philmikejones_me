@@ -1,0 +1,96 @@
+---
+title: "Trigpoints data set released"
+author: "Phil Mike Jones"
+date: 2018-09-2
+slug: trigpoints-data-set-released
+categories: ["blog"]
+tags: ["trigpoints", "cran", "rstats", "r", "data", "spatial"]
+---
+
+I've packaged up the Ordnance Survey's [archive of trig points](https://www.ordnancesurvey.co.uk/gps/legacy-control-information/triangulation-stations) into an R package for immediate download and use with R.
+
+Install it with:
+
+```{r install, eval=FALSE}
+install.packages("trigpoints")
+```
+
+Load it as you would a normal package (I also load a few other useful packages here):
+
+```{r load}
+library("trigpoints")
+library("dplyr")
+library("sf")
+```
+
+Check it's loaded correctly:
+
+```{r view}
+trigpoints
+```
+
+And a quick (ish) plot:
+
+```{r plot}
+plot(trigpoints, max.plot = 1)
+```
+
+The coordinates are projected and stored in OSGB36 British National Grid, for plotting with most OS or other UK shapefiles.
+However, these are incompatible with most web--based providers tiles so transform them if you want to plot with these:
+
+```{r transform}
+trigpoints =
+  trigpoints %>% 
+  st_transform(crs = 4326)
+```
+
+Before we plot these there are far too many to plot interactively, so instead I plot a random selection:
+
+```{r sample}
+trigpoints =
+  trigpoints %>% 
+  sample_frac(0.1)
+```
+
+I also remove any trigpoints that have been destroyed, and keep only those that are the iconic 'Hotine' pillar style:
+
+```{r destroyed-pillar}
+trigpoints =
+  trigpoints %>%
+  filter(destroyed == 0L) %>%
+  filter(type == "PILLAR")
+```
+
+Now we can plot these on a basemap:
+
+```{r basemap}
+# install.packages("leaflet")
+library("leaflet")
+
+map =
+  leaflet(trigpoints) %>%
+  addMarkers(popup = ~ paste0(
+    htmltools::htmlEscape(name),
+    "<br />",
+    "Height: ",
+    htmltools::htmlEscape(height), " m")
+  ) %>% 
+  addTiles()
+
+map
+```
+
+## Notes
+
+- This data set is no longer maintained by Ordnance Survey so stations marked as not destroyed might no longer exist.
+- The coordinates specified are not true OSGB36 National Grid coordinates. They are expected to be accurate to within a metre so will be fine for most purposes.
+
+
+## Licence
+
+- Code: Copyright 2018 Phil Mike Jones. Licensed under the terms of the MIT License. see LICENSE
+- Data: Contains OS data © Crown copyright and database right (2018)
+
+## Source
+
+The full list of trig points was obtained from: https://www.ordnancesurvey.co.uk/gps/legacy-control-information/triangulation-stations
