@@ -30,7 +30,7 @@ trigpoints
 
 And a quick (ish) plot:
 
-```{r plot}
+```{r plot, out.width="720px"}
 plot(trigpoints, max.plot = 1)
 ```
 
@@ -62,7 +62,7 @@ trigpoints =
 
 Now we can plot these on a basemap:
 
-```{r basemap}
+```{r basemap, out.width="720px"}
 # install.packages("leaflet")
 library("leaflet")
 
