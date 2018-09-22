@@ -18,18 +18,19 @@ tags: [trigpoints, cran, rstats, r, data, spatial]
 
 
 <p>I’ve packaged up the Ordnance Survey’s <a href="https://www.ordnancesurvey.co.uk/gps/legacy-control-information/triangulation-stations">archive of trig points</a> into an R package for immediate download and use with R.</p>
+<!--more-->
 <p>Install it with:</p>
 <pre class="r"><code>install.packages(&quot;trigpoints&quot;)</code></pre>
 <p>Load it as you would a normal package (I also load a few other useful packages here):</p>
 <pre class="r"><code>library(&quot;trigpoints&quot;)
 library(&quot;dplyr&quot;)</code></pre>
-<pre><code>## 
+<pre><code>##
 ## Attaching package: &#39;dplyr&#39;</code></pre>
 <pre><code>## The following objects are masked from &#39;package:stats&#39;:
-## 
+##
 ##     filter, lag</code></pre>
 <pre><code>## The following objects are masked from &#39;package:base&#39;:
-## 
+##
 ##     intersect, setdiff, setequal, union</code></pre>
 <pre class="r"><code>library(&quot;sf&quot;)</code></pre>
 <pre><code>## Linking to GEOS 3.6.2, GDAL 2.2.3, proj.4 4.9.3</code></pre>
@@ -42,8 +43,8 @@ library(&quot;dplyr&quot;)</code></pre>
 ## epsg (SRID):    27700
 ## proj4string:    +proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 +ellps=airy +towgs84=446.448,-125.157,542.06,0.15,0.247,0.842,-20.489 +units=m +no_defs
 ## # A tibble: 31,521 x 15
-##    name  station new_name height order type  sec_com_blk com_date  
-##    &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;     &lt;dbl&gt; &lt;int&gt; &lt;chr&gt; &lt;chr&gt;       &lt;date&gt;    
+##    name  station new_name height order type  sec_com_blk com_date
+##    &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;     &lt;dbl&gt; &lt;int&gt; &lt;chr&gt; &lt;chr&gt;       &lt;date&gt;
 ##  1 1     TL08/I… TL08I010      0     3 APEX  TL08        1954-06-01
 ##  2 2 Si… SD80/T… SD80T150      0     4 BOLT  SD80        1949-06-01
 ##  3 2 Si… SD80/T… SD80T150      0     4 CENT… SD80        1949-06-01
@@ -63,11 +64,11 @@ library(&quot;dplyr&quot;)</code></pre>
 <p>The coordinates are projected and stored in OSGB36 British National Grid, for plotting with most OS or other UK shapefiles.
 However, these are incompatible with most web–based providers tiles so transform them if you want to plot with these:</p>
 <pre class="r"><code>trigpoints =
-  trigpoints %&gt;% 
+  trigpoints %&gt;%
   st_transform(crs = 4326)</code></pre>
 <p>Before we plot these there are far too many to plot interactively, so instead I plot a random selection:</p>
 <pre class="r"><code>trigpoints =
-  trigpoints %&gt;% 
+  trigpoints %&gt;%
   sample_frac(0.1)</code></pre>
 <p>I also remove any trigpoints that have been destroyed, and keep only those that are the iconic ‘Hotine’ pillar style:</p>
 <pre class="r"><code>trigpoints =
@@ -85,8 +86,8 @@ map =
     &quot;&lt;br /&gt;&quot;,
     &quot;Height: &quot;,
     htmltools::htmlEscape(height), &quot; m&quot;)
-  ) %&gt;% 
-  addTiles()  
+  ) %&gt;%
+  addTiles()
 
 map</code></pre>
 <div id="htmlwidget-1" style="width:778px;height:480px;" class="leaflet html-widget"></div>
