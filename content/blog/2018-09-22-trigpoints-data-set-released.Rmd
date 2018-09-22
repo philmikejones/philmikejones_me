@@ -1,9 +1,9 @@
 ---
-title: "Trigpoints data set released"
-author: "Phil Mike Jones"
-date: "2018-09-22"
-categories: ["blog"]
-tags: ["trigpoints", "cran", "rstats", "r", "data", "spatial"]
+title: Trigpoints data set released
+author: Phil Mike Jones
+date: 2018-09-22
+categories: [blog]
+tags: [trigpoints, cran, rstats, r, data, spatial]
 ---
 
 I've packaged up the Ordnance Survey's [archive of trig points](https://www.ordnancesurvey.co.uk/gps/legacy-control-information/triangulation-stations) into an R package for immediate download and use with R.
