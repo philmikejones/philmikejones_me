@@ -67,14 +67,14 @@ Now we can plot these on a basemap:
 library("leaflet")
 
 map =
-  leaflet(trigpoints) %>%
+  leaflet(trigpoints, width = 720) %>%
   addMarkers(popup = ~ paste0(
     htmltools::htmlEscape(name),
     "<br />",
     "Height: ",
     htmltools::htmlEscape(height), " m")
   ) %>% 
-  addTiles()
+  addTiles()  
 
 map
 ```
