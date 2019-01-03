@@ -6,8 +6,8 @@ You can [read the manuscript](http://etheses.whiterose.ac.uk/id/eprint/19283)  o
 
 I have taught geography, GIS, and quantitative methods at undergraduate level and above.
 I've written several related [tutorials](tutorials/) and [blog posts](blog/) you can read, use, and share for free ([CC BY-NC](https://creativecommons.org/licenses/by-nc/4.0/)).
-My [stats101](https://philmikejones.github.io/stats101/) might also be useful if you want an introduction to statistics (written with Python).
+My [stats101](https://philmikejones.github.io/stats101/) website might also be useful if you want an introduction to statistics (written with Python).
 
-I currently work on the "[Long-term impacts of 'Thatcherism': crime, politics and inequality](https://www.sheffield.ac.uk/law/research/projects/crimetrajectories)" project at the [University of Derby](https://www.derby.ac.uk/)'s [Department of Criminology and Social Sciences](https://www.derby.ac.uk/departments/criminology-social-sciences/).
+I currently work on the "[Long-term impacts of 'Thatcherism': crime, politics and inequality](https://www.sheffield.ac.uk/law/research/projects/crimetrajectories)" project at the [University of Derby](https://www.derby.ac.uk/) in the [Department of Criminology and Social Sciences](https://www.derby.ac.uk/departments/criminology-social-sciences/).
 
 [Read my bio >](bio/)

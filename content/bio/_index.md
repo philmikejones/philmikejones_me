@@ -24,7 +24,7 @@ I have an MA with distinction in social research from the University of York (20
 
 ## Current role
 
-I currently work on the "[Long-term impacts of 'Thatcherism': crime, politics and inequality](https://www.sheffield.ac.uk/law/research/projects/crimetrajectories)" project at the [University of Derby](https://www.derby.ac.uk/)'s [Department of Criminology and Social Sciences](https://www.derby.ac.uk/departments/criminology-social-sciences/).Derby in the Department of Criminology and Social Sciences.
+I currently work on the "[Long-term impacts of 'Thatcherism': crime, politics and inequality](https://www.sheffield.ac.uk/law/research/projects/crimetrajectories)" project at the [University of Derby](https://www.derby.ac.uk/) in the [Department of Criminology and Social Sciences](https://www.derby.ac.uk/departments/criminology-social-sciences/).
 We were previously based at the University of Sheffield.
 
 
