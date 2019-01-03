@@ -4,9 +4,10 @@ You can see some of my [code projects](https://github.com/philmikejones) on GitH
 I have a PhD in human geography.
 You can [read the manuscript](http://etheses.whiterose.ac.uk/id/eprint/19283)  or [view the source code](https://github.com/philmikejones/thesis).
 
-I have taught geography, GIS, and quantitative methods.
+I have taught geography, GIS, and quantitative methods at undergraduate level and above.
 I've written several related [tutorials](tutorials/) and [blog posts](blog/) you can read, use, and share for free ([CC BY-NC](https://creativecommons.org/licenses/by-nc/4.0/)).
+My [stats101](https://philmikejones.github.io/stats101/) might also be useful if you want an introduction to statistics (written with Python).
 
-I currently work on the "[Long-term impacts of 'Thatcherism': crime, politics and inequality](https://www.sheffield.ac.uk/law/research/projects/crimetrajectories)" project in the [Centre for Criminological Research](https://www.sheffield.ac.uk/law/research/clusters/ccr) at the University of Sheffield.
+I currently work on the "[Long-term impacts of 'Thatcherism': crime, politics and inequality](https://www.sheffield.ac.uk/law/research/projects/crimetrajectories)" project at the [University of Derby](https://www.derby.ac.uk/)'s [Department of Criminology and Social Sciences](https://www.derby.ac.uk/departments/criminology-social-sciences/).
 
 [Read my bio >](bio/)
