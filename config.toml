@@ -1,6 +1,6 @@
 ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
 
-baseurl = "/"
+baseurl = "https://philmikejones.me"
 DefaultContentLanguage = "en"
 #DefaultContentLanguage = "ja"
 title = "Phil Mike Jones"
