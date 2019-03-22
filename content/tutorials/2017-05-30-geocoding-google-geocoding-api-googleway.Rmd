@@ -53,7 +53,7 @@ For example, I add `keys/` to `.gitignore` so that folder isn't tracked and shar
 Load it with `readLines()`:
 
 ```{r load-key, echo=TRUE, cache=FALSE}
-gkey = readLines("../../keys/geocode_api_key.txt", n = 1)
+gkey = Sys.getenv("GEOCODE_KEY")
 ```
 
 

@@ -8,13 +8,10 @@ tags: ["rstats", "rmapshaper", "grass", "v.generalize", "gis", "geometry"]
 
 
 
-<p>When you download geographical data the polygons are often highly detailed, leading to large file sizes and slow processing times.
-This tutorials shows you how to simplify detailed polygons in R and QGIS without creating slivers (gaps) between the resultant shapes.</p>
+<p>When you download geographical data the polygons are often highly detailed, leading to large file sizes and slow processing times. This tutorials shows you how to simplify detailed polygons in R and QGIS without creating slivers (gaps) between the resultant shapes.</p>
 <!--more-->
-<p>When you download boundary data, for example from the <a href="https://census.ukdataservice.ac.uk/get-data/boundary-data">census boundary data</a> page, the polygons are usually highly detailed.
-Often this detail is unnecessary if you’re not intending to produce small–scale maps.</p>
-<p>Most thematic maps, for example, tend to compare large geographies such as nations or regions, so the detail is unnecessary.
-Likewise, if you’re producing your map for use on the web, for example as an interactive visualisation, too much detail can slow the rendering and responsiveness of your app.</p>
+<p>When you download boundary data, for example from the <a href="https://census.ukdataservice.ac.uk/get-data/boundary-data">census boundary data</a> page, the polygons are usually highly detailed. Often this detail is unnecessary if you’re not intending to produce small–scale maps.</p>
+<p>Most thematic maps, for example, tend to compare large geographies such as nations or regions, so the detail is unnecessary. Likewise, if you’re producing your map for use on the web, for example as an interactive visualisation, too much detail can slow the rendering and responsiveness of your app.</p>
 <p>Downloading pre–simplified versions or trying to simplify the polygons yourself in QGIS or ArcGIS can be unsatisfactory because some simplification functions introduce ‘slivers’ or gaps between the simplified geometries.</p>
 <p>There are at least two approaches to obtaining simplified geometries that are topologically–aware (i.e., you don’t end up with any gaps).</p>
 <blockquote>
@@ -30,16 +27,14 @@ Likewise, if you’re producing your map for use on the web, for example as an i
 <li>Select <code>v.generalize</code></li>
 </ol>
 <div class="figure">
-<img src="../../img/v_generalize.png" alt="“‘v.generalize’ dialogue box”" />
+<img src="../../img/v_generalize.png" alt="v.generalize dialogue box" />
 <p class="caption">“‘v.generalize’ dialogue box”</p>
 </div>
-<p>By default this will save a temporary layer which you can then export, or you can specify a filename.
-With the default values I was able to simplify a shapefile from 35MB to 11MB, or about <span class="math inline">\(\frac{1}{3}\)</span> of the original size without introducing any gaps.</p>
+<p>By default this will save a temporary layer which you can then export, or you can specify a filename. With the default values I was able to simplify a shapefile from 35MB to 11MB, or about <span class="math inline">\(\frac{1}{3}\)</span> of the original size without introducing any gaps.</p>
 </div>
 <div id="r---rmapshaper" class="section level2">
 <h2>R - <code>rmapshaper</code></h2>
-<p>Traditionally simplifcation was performed with the <code>rgeos</code> package in R, but this was not topologically–aware.
-The package <a href="https://cran.r-project.org/package=rmapshaper"><code>rmapshaper</code></a> simplifies polygons without introducing slivers and gaps, and is compatible with <a href="https://cran.r-project.org/package=sf"><code>sf</code></a> and <code>sp</code> objects.</p>
+<p>Traditionally simplifcation was performed with the <code>rgeos</code> package in R, but this was not topologically–aware. The package <a href="https://cran.r-project.org/package=rmapshaper"><code>rmapshaper</code></a> simplifies polygons without introducing slivers and gaps, and is compatible with <a href="https://cran.r-project.org/package=sf"><code>sf</code></a> and <code>sp</code> objects.</p>
 <p>Install and load some required packages (I’m assuming you already have <code>tidyverse</code> and <code>sf</code> installed):</p>
 <pre class="r"><code># install.packages(&quot;rmapshaper&quot;)  # install if necessary
 library(&quot;tidyverse&quot;)
@@ -67,8 +62,7 @@ unzip(tmp, exdir = tmp_dir)</code></pre>
 <pre><code>## 13.4 MB</code></pre>
 <pre class="r"><code>pryr::object_size(rgn_simp)</code></pre>
 <pre><code>## 162 kB</code></pre>
-<p>So the simplification has definitely worked in terms of file size!
-Next lets compare the plots:</p>
+<p>So the simplification has definitely worked in terms of file size! Next lets compare the plots:</p>
 <pre class="r"><code>rgn_simp$simplified = &quot;Simplified&quot;
 rgn$simplified      = &quot;Original&quot;
 
@@ -79,6 +73,5 @@ rgn = reduce(
 
 ggplot(rgn) + geom_sf() + facet_wrap( ~ simplified)</code></pre>
 <p><img src="/tutorials/2016-09-29-simplify-polygons-without-creating-slivers_files/figure-html/compare-plots-1.png" width="672" /></p>
-<p>At this scale I can’t tell the difference, which would be perfect for web visualisation and even for printing.
-Even if your plots are being printed, you’ll save yourself a lot of rendering time over the unsimplified files.</p>
+<p>At this scale I can’t tell the difference, which would be perfect for web visualisation and even for printing. Even if your plots are being printed, you’ll save yourself a lot of rendering time over the unsimplified files.</p>
 </div>

@@ -8,8 +8,7 @@ tags: ["geocode", "googleway", "api", "rstats"]
 
 
 
-<p>Geocoding is the process of taking an address, postcode, or other human–readable identifier and converting it into coordinates.
-Here I use the <a href="https://developers.google.com/maps/documentation/geocoding/intro">Google Geocoding API</a> which I access within R with the <a href="https://cran.r-project.org/package=googleway"><code>googleway</code></a> package.</p>
+<p>Geocoding is the process of taking an address, postcode, or other human–readable identifier and converting it into coordinates. Here I use the <a href="https://developers.google.com/maps/documentation/geocoding/intro">Google Geocoding API</a> which I access within R with the <a href="https://cran.r-project.org/package=googleway"><code>googleway</code></a> package.</p>
 <!--more-->
 <div id="obtain-a-google-geocoding-api-key" class="section level2">
 <h2>Obtain a Google Geocoding API key</h2>
@@ -44,11 +43,9 @@ Here I use the <a href="https://developers.google.com/maps/documentation/geocodi
 </div>
 <div id="using-your-key" class="section level2">
 <h2>Using your key</h2>
-<p>I find the easiest way to use the API key is to store it in a text file that is not kept with your data analysis.
-That way you can still share the data analysis script or results without sharing the key.</p>
-<p>For example, I add <code>keys/</code> to <code>.gitignore</code> so that folder isn’t tracked and shared, and place my key in there.
-Load it with <code>readLines()</code>:</p>
-<pre class="r"><code>gkey = readLines(&quot;../../keys/geocode_api_key.txt&quot;, n = 1)</code></pre>
+<p>I find the easiest way to use the API key is to store it in a text file that is not kept with your data analysis. That way you can still share the data analysis script or results without sharing the key.</p>
+<p>For example, I add <code>keys/</code> to <code>.gitignore</code> so that folder isn’t tracked and shared, and place my key in there. Load it with <code>readLines()</code>:</p>
+<pre class="r"><code>gkey = Sys.getenv(&quot;GEOCODE_KEY&quot;)</code></pre>
 </div>
 <div id="packages" class="section level2">
 <h2>Packages</h2>
@@ -57,12 +54,11 @@ Load it with <code>readLines()</code>:</p>
 </div>
 <div id="set-up-your-humanreadable-addresses" class="section level2">
 <h2>Set up your human–readable addresses</h2>
-<p>You now need to wrangle your address data into a form the Geocoding API can understand.
-For example, it’s common to have a data base with a field for town and a field for country, like the <code>addresses</code> data base below:</p>
-<table style="width:36%;">
+<p>You now need to wrangle your address data into a form the Geocoding API can understand. For example, it’s common to have a data base with a field for town and a field for country, like the <code>addresses</code> data base below:</p>
+<table style="width:32%;">
 <colgroup>
 <col width="18%" />
-<col width="18%" />
+<col width="13%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -89,8 +85,7 @@ For example, it’s common to have a data base with a field for town and a field
 </tr>
 </tbody>
 </table>
-<p>The Geocoding API expects a single string per query, so we need to join the two items.
-As it happens, <code>paste0()</code> is vectorised:</p>
+<p>The Geocoding API expects a single string per query, so we need to join the two items. As it happens, <code>paste0()</code> is vectorised:</p>
 <pre class="r"><code>address_strings = paste0(addresses$town, &quot;, &quot;, addresses$country)
 address_strings</code></pre>
 <pre><code>## [1] &quot;Sheffield, England&quot;  &quot;Manchester, England&quot; &quot;Glasgow, Scotland&quot;  
@@ -99,20 +94,14 @@ address_strings</code></pre>
 </div>
 <div id="storing-the-results" class="section level2">
 <h2>Storing the results</h2>
-<p>I don’t know of a vectorised way to geocode a number of addresses, so I’m going to use a <code>for()</code> loop.
-We’re limited to the number of times we can query the API server per second anyway, so this isn’t going to be a problem.</p>
-<p>As with all <code>for()</code> loops in R, we should create an empty vector and replace values rather than append each time.
-See <a href="https://csgillespie.github.io/efficientR/programming.html#memory-allocation">Efficient R Programming</a> for why this is a good idea.</p>
+<p>I don’t know of a vectorised way to geocode a number of addresses, so I’m going to use a <code>for()</code> loop. We’re limited to the number of times we can query the API server per second anyway, so this isn’t going to be a problem.</p>
+<p>As with all <code>for()</code> loops in R, we should create an empty vector and replace values rather than append each time. See <a href="https://csgillespie.github.io/efficientR/programming.html#memory-allocation">Efficient R Programming</a> for why this is a good idea.</p>
 <pre class="r"><code>lat = vector(&quot;numeric&quot;, length = nrow(addresses))
 lng = vector(&quot;numeric&quot;, length = nrow(addresses))</code></pre>
 </div>
 <div id="geocode" class="section level2">
 <h2>Geocode</h2>
-<p>To perform the actual geocoding, we loop over <code>address_strings</code> and append the latitude and longitude coordinates to our pre–allocated vectors.
-I also check that the query returned <code>OK</code>; if it hasn’t I simply enter a missing value (<code>NA</code>) which can be fixed later (manually if necessary).
-Finally, sometimes the API returns multiple results so I’ve selected the first one.
-This tends to happen if the query isn’t specific enough (for example ‘Manchester’ might return Manchester, UK and Manchester, New Hampshire, USA).
-Again, these can be fixed later if necessary.</p>
+<p>To perform the actual geocoding, we loop over <code>address_strings</code> and append the latitude and longitude coordinates to our pre–allocated vectors. I also check that the query returned <code>OK</code>; if it hasn’t I simply enter a missing value (<code>NA</code>) which can be fixed later (manually if necessary). Finally, sometimes the API returns multiple results so I’ve selected the first one. This tends to happen if the query isn’t specific enough (for example ‘Manchester’ might return Manchester, UK and Manchester, New Hampshire, USA). Again, these can be fixed later if necessary.</p>
 <pre class="r"><code>for (i in 1:nrow(addresses)) {
   coord = googleway::google_geocode(address_strings[i], key = gkey)
 
