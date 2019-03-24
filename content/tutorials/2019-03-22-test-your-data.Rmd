@@ -23,8 +23,9 @@ By calculating units of alcohol we only need to include one term in the model ma
 
 For this example I'm going to take an extract from the BCS70 cohort in 1986 when they were aged 16, but the other time points and cohort raised very similar issues because they were recorded in very similar ways.
 I obviously can't include actual BCS70 data as it is restricted (but if you're a UK academic researcher you can download the [BCS70 Sixteen--year follow--up (1986)](https://beta.ukdataservice.ac.uk/datacatalogue/studies/study?id=3535) yourself).
-I've taken a sample of respondents, removed the given IDs and replaced these with just a unique integer, and replaced all the numbers of pints/glasses drunk with just `1.0` (for this example I'm not interested in the actual number of drinks/units of alcohol consumed, just if there is/is not data).
-In all other respects I've constructed the example data to be as close to the original data as possible, including the number of completed/missing responses; the issues I raise with this example data set are very real based on the actual issues I encountered (and which are themselves pretty typical of the kind of issues of social science research).
+I've taken a sample of 100 respondents and removed their given IDs and replaced these with just a unique integer.
+In all other respects I've constructed the example data to be as close to the original data as possible, including the number of completed/missing responses.
+The issues I raise with this example data set are very real based on the actual issues I encountered (and which are themselves pretty typical of the kind of issues of social science research).
 You can [download my example data](https://philmikejones.me/tutorials/2019-03-22-test-your-data/bcs70.csv) or load it directly into `R`.
 
 ```{r download-data}
@@ -37,10 +38,19 @@ url = "~/gits/philmikejones_me/static/tutorials/2019-03-22-test-your-data/bcs70.
 bcs70 = read_csv(url)
 ```
 
-It should look like this:
+Let's take a look at the top and bottom 10 cases:
 
 ```{r data}
-bcs70 %>% sample_n(10)
+head(bcs70)
+tail(bcs70)
 ```
 
 Like all social science data it is a bit messy.
+We can see there are a lot of completely missing cases (`NA`) so these respondents exist at some point in the BCS70 but were not asked the alcohol questions (or any questions) in 1986.
+Those with answers look like they have a value in each question (even if it's `0.0`).
+So let's get to it.
+
+My approach here is to calculate the number of units of each drink type consumed and create a new variable for each.
+So for `beer` I will calculate `beer_units`, `cider` I will calculate `cider_units`, and so on.
+I will therefore be using `mutate()` in the `dplyr()` package for these calculations so that existing variables are not removed.
+I will then simply add these units up to arrive at the total units consumed in the past seven days.

@@ -11,7 +11,7 @@ tags: ["r", "rstats", "test", "unit test", "testthat"]
 <p>I’ve written and spoken before about how important it is to <a href="blog/unit-testing-in-r/">test your functions and data analysis scripts</a>. In this tutorial I revisit these ideas and demonstrate how and why to test your data. I use <code>testthat</code> in <code>R</code> although the ideas are language–agnostic. I decided to revisit these ideas and write this tutorial based on my experience of calculating the number of units of alcohol panel members in the <a href="https://cls.ucl.ac.uk/cls-studies/">NCDS and BCS70 birth cohorts</a> drank at different time points. I initially thought this would be a straightforward mathematical calculation but this turned out to be vastly more complicated than I thought (it always does!). My tests of the data identified the problem (something I would likely have missed without them) and confirmed when I had solved the problem.</p>
 <!--more-->
 <p>I am currently using the NCDS and BCS70 birth cohort data sets to model alcohol consumption at different time point. We decided to convert the questions on the type and quantity of alcohol consumed into just units of alcohol consumed to simplify the modelling. For example, at most time points cohort members were asked how many pints or glasses of beer, wine, and spirits they had consumed in the past seven days. One pint of beer is not the same amount of alcohol as one glass of wine; if we were to include these items individually this makes the model quite difficult to interpret. By calculating units of alcohol we only need to include one term in the model making it easier to produce and more intuitive to interpret.</p>
-<p>For this example I’m going to take an extract from the BCS70 cohort in 1986 when they were aged 16, but the other time points and cohort raised very similar issues because they were recorded in very similar ways. I obviously can’t include actual BCS70 data as it is restricted (but if you’re a UK academic researcher you can download the <a href="https://beta.ukdataservice.ac.uk/datacatalogue/studies/study?id=3535">BCS70 Sixteen–year follow–up (1986)</a> yourself). I’ve taken a sample of respondents, removed the given IDs and replaced these with just a unique integer, and replaced all the numbers of pints/glasses drunk with just <code>1.0</code> (for this example I’m not interested in the actual number of drinks/units of alcohol consumed, just if there is/is not data). In all other respects I’ve constructed the example data to be as close to the original data as possible, including the number of completed/missing responses; the issues I raise with this example data set are very real based on the actual issues I encountered (and which are themselves pretty typical of the kind of issues of social science research). You can <a href="https://philmikejones.me/tutorials/2019-03-22-test-your-data/bcs70.csv">download my example data</a> or load it directly into <code>R</code>.</p>
+<p>For this example I’m going to take an extract from the BCS70 cohort in 1986 when they were aged 16, but the other time points and cohort raised very similar issues because they were recorded in very similar ways. I obviously can’t include actual BCS70 data as it is restricted (but if you’re a UK academic researcher you can download the <a href="https://beta.ukdataservice.ac.uk/datacatalogue/studies/study?id=3535">BCS70 Sixteen–year follow–up (1986)</a> yourself). I’ve taken a sample of 100 respondents and removed their given IDs and replaced these with just a unique integer. In all other respects I’ve constructed the example data to be as close to the original data as possible, including the number of completed/missing responses. The issues I raise with this example data set are very real based on the actual issues I encountered (and which are themselves pretty typical of the kind of issues of social science research). You can <a href="https://philmikejones.me/tutorials/2019-03-22-test-your-data/bcs70.csv">download my example data</a> or load it directly into <code>R</code>.</p>
 <pre class="r"><code># if necessary run:
 # install.packages(c(&quot;readr&quot;, &quot;dplyr&quot;))
 library(&quot;readr&quot;)
@@ -37,19 +37,25 @@ bcs70 = read_csv(url)</code></pre>
 ##   shandy = col_double(),
 ##   spirits = col_double()
 ## )</code></pre>
-<p>It should look like this:</p>
-<pre class="r"><code>bcs70 %&gt;% sample_n(10)</code></pre>
-<pre><code>## # A tibble: 10 x 8
-##    bcsid days_drink  beer cider sherry  wine shandy spirits
-##    &lt;dbl&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;
-##  1    62          2     0     0      0     0      1       0
-##  2    90          1     0     0      4     1      1       0
-##  3    25         NA    NA    NA     NA    NA     NA      NA
-##  4    69         NA    NA    NA     NA    NA     NA      NA
-##  5    79          1     4     0      0     0      0       0
-##  6    26         NA    NA    NA     NA    NA     NA      NA
-##  7    21         NA    NA    NA     NA    NA     NA      NA
-##  8    78          2     4     0      0     0      0       0
-##  9    65          1     3     0      0     0      0       0
-## 10     2         NA    NA    NA     NA    NA     NA      NA</code></pre>
+<p>Let’s take a look at the top and bottom 10 cases:</p>
+<pre class="r"><code>head(bcs70)</code></pre>
+<pre><code>## # A tibble: 6 x 8
+##   bcsid days_drink  beer cider sherry  wine shandy spirits
+##   &lt;dbl&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;
+## 1     1         NA    NA    NA     NA    NA     NA      NA
+## 2     2         NA    NA    NA     NA    NA     NA      NA
+## 3     3         NA    NA    NA     NA    NA     NA      NA
+## 4     4         NA    NA    NA     NA    NA     NA      NA
+## 5     5         NA    NA    NA     NA    NA     NA      NA
+## 6     6         NA    NA    NA     NA    NA     NA      NA</code></pre>
+<pre class="r"><code>tail(bcs70)</code></pre>
+<pre><code>## # A tibble: 6 x 8
+##   bcsid days_drink  beer cider sherry  wine shandy spirits
+##   &lt;dbl&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;
+## 1    95         NA    NA    NA     NA    NA     NA      NA
+## 2    96          1     0     0      0     2      0       0
+## 3    97         NA    NA    NA     NA    NA     NA      NA
+## 4    98          1     1     0      0     0      0       0
+## 5    99          1     1     0      0     0      0       0
+## 6   100         NA    NA    NA     NA    NA     NA      NA</code></pre>
 <p>Like all social science data it is a bit messy.</p>
