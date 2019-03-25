@@ -6,23 +6,27 @@ categories: "tutorials"
 tags: ["r", "rstats", "test", "unit test", "testthat"]
 ---
 
+```{r library, include=FALSE, echo=FALSE, message=FALSE, warning=FALSE, eval=TRUE}
+library("testthat")
+```
+
 I've written and spoken before about how important it is to [test your functions and data analysis scripts](blog/unit-testing-in-r/).
 In this tutorial I revisit these ideas and demonstrate how and why to test your data.
 I use `testthat` in `R` although the ideas are language--agnostic.
-I decided to revisit these ideas and write this tutorial based on my experience of calculating the number of units of alcohol panel members in the [NCDS and BCS70 birth cohorts](https://cls.ucl.ac.uk/cls-studies/) drank at different time points.
+I decided to revisit these ideas and write this tutorial based on my experience of calculating the number of units of alcohol the panel members in the [NCDS and BCS70 birth cohorts](https://cls.ucl.ac.uk/cls-studies/) drank at different time points.
 I initially thought this would be a straightforward mathematical calculation but this turned out to be vastly more complicated than I thought (it always does!).
 My tests of the data identified the problem (something I would likely have missed without them) and confirmed when I had solved the problem.
 
 <!--more-->
 
 I am currently using the NCDS and BCS70 birth cohort data sets to model alcohol consumption at different time point.
-We decided to convert the questions on the type and quantity of alcohol consumed into just units of alcohol consumed to simplify the modelling.
+Panel members were asked questions about the type and quantity of drinks they consumed in the past seven days, and we decided to convert these into just units of alcohol consumed to simplify the modelling.
 For example, at most time points cohort members were asked how many pints or glasses of beer, wine, and spirits they had consumed in the past seven days.
-One pint of beer is not the same amount of alcohol as one glass of wine; if we were to include these items individually this makes the model quite difficult to interpret.
+One pint of beer does not contain the same amount of alcohol as one glass of wine; if we were to include these items individually this makes the model quite difficult to interpret.
 By calculating units of alcohol we only need to include one term in the model making it easier to produce and more intuitive to interpret.
 
 For this example I'm going to take an extract from the BCS70 cohort in 1986 when they were aged 16, but the other time points and cohort raised very similar issues because they were recorded in very similar ways.
-I obviously can't include actual BCS70 data as it is restricted (but if you're a UK academic researcher you can download the [BCS70 Sixteen--year follow--up (1986)](https://beta.ukdataservice.ac.uk/datacatalogue/studies/study?id=3535) yourself).
+I obviously can't include actual BCS70 data as it is restricted (but if you're a UK academic researcher you can download the [BCS70 sixteen--year follow--up (1986)](https://beta.ukdataservice.ac.uk/datacatalogue/studies/study?id=3535) yourself).
 I've taken a sample of 100 respondents and removed their given IDs and replaced these with just a unique integer.
 In all other respects I've constructed the example data to be as close to the original data as possible, including the number of completed/missing responses.
 The issues I raise with this example data set are very real based on the actual issues I encountered (and which are themselves pretty typical of the kind of issues of social science research).
@@ -54,3 +58,44 @@ My approach here is to calculate the number of units of each drink type consumed
 So for `beer` I will calculate `beer_units`, `cider` I will calculate `cider_units`, and so on.
 I will therefore be using `mutate()` in the `dplyr()` package for these calculations so that existing variables are not removed.
 I will then simply add these units up to arrive at the total units consumed in the past seven days.
+
+```{r calculate-units}
+bcs70 =
+  bcs70 %>%
+  mutate(
+    beer_units = beer * 2.3,
+    cider_units = cider * 2.6,
+    sherry_units = sherry * 1.8,
+    wine_units = wine * 1.8,
+    shandy_units = shandy * 2.3 / 2,
+    spirits_units = spirits * 1.0
+  )
+
+bcs70
+```
+
+To test this has worked I create a test suite.
+The easiest way to do this is with the `usethis` package:
+
+```{r setup-tests, eval=FALSE}
+# install.packages("usethis")
+library("usethis")
+
+use_test("test-bcs70")
+```
+
+This creates the necessary `tests/` directories and sets up a test file.
+First set up a context and load the necessary libraries, and as our first test I want to ensure the calculated `_units` variables are numeric (specifically double):
+
+```{r begin-test}
+context("Test bcs70")
+
+test_that("Calculated units are numeric", {
+  expect_type(bcs70$beer_units, "double")
+  expect_type(bcs70$cider_units, "double")
+  expect_type(bcs70$sherry_units, "double")
+  expect_type(bcs70$wine_units, "double")
+  expect_type(bcs70$shandy_units, "double")
+  expect_type(bcs70$spirits_units, "double")
+})
+```
