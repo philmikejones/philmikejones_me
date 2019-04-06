@@ -118,7 +118,8 @@ bcs70</code></pre>
 ## #   sherry_units &lt;dbl&gt;, wine_units &lt;dbl&gt;, shandy_units &lt;dbl&gt;,
 ## #   spirits_units &lt;dbl&gt;, total_units &lt;dbl&gt;</code></pre>
 <p>To test to see if this worked I create a test suite. The easiest way to do this is with the <code>usethis</code> package:</p>
-<pre class="r"><code># install.packages(&quot;usethis&quot;)
+<pre class="r"><code># if necessary run
+# install.packages(c(&quot;usethis&quot;, &quot;testthat&quot;))
 library(&quot;usethis&quot;)
 
 use_test(&quot;test-bcs70&quot;)</code></pre>
@@ -147,6 +148,14 @@ test_that(&quot;Calculated units are numeric&quot;, {
 <p>If you run the code above, the tests will fail. This is because the <code>min</code> of a vector with an <code>NA</code> in is <code>NA</code>: i.e. the <code>min</code> of <code>bcs70$beer</code> is <code>NA</code> because there’s an <code>NA</code> in that vector:</p>
 <pre class="r"><code>is.na(min(bcs70$beer))</code></pre>
 <pre><code>## [1] TRUE</code></pre>
+<p>This is something I forget all the time:</p>
+<blockquote class="twitter-tweet" data-cards="hidden" data-lang="en">
+<p lang="en" dir="ltr">
+If I had a quid for every time I forgot that NA + 0.0 is NOT 0.0 I'd still be as forgetful but at least I'd be richer <a href="https://twitter.com/hashtag/RStats?src=hash&amp;ref_src=twsrc%5Etfw">#RStats</a> <a href="https://t.co/iaUBCd87Rk">pic.twitter.com/iaUBCd87Rk</a>
+</p>
+— 🇪🇺🌍 Phil (<span class="citation">@philmikejones</span>) <a href="https://twitter.com/philmikejones/status/1107958263247720448?ref_src=twsrc%5Etfw">March 19, 2019</a>
+</blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 <p>So we must modify our tests to exclude the NAs with <a href="https://www.rdocumentation.org/packages/base/versions/3.5.3/topics/Extremes"><code>na.rm = TRUE</code></a>:</p>
 <pre class="r"><code>test_that(&quot;Calculated minimum units are 0.0&quot;, {
   expect_gte(min(bcs70$beer_units, na.rm = TRUE), 0.0)
@@ -156,37 +165,21 @@ test_that(&quot;Calculated units are numeric&quot;, {
   expect_gte(min(bcs70$shandy_units, na.rm = TRUE), 0.0)
   expect_gte(min(bcs70$spirits_units, na.rm = TRUE), 0.0)
   expect_gte(min(bcs70$total_units, na.rm = TRUE), 0.0)
-})</code></pre>
-<p>So far, so good. I also want to test to see if the maximum number of units is sensible. I don’t know in advance what the maximum number of drinks is, but we can work that out:</p>
-<pre class="r"><code>pmax(
-  c(bcs70$beer, bcs70$cider, bcs70$sherry, bcs70$wine, bcs70$shandy,
-    bcs70$spirits),
-  na.rm = TRUE
-)</code></pre>
-<pre><code>##   [1] NA NA NA NA NA NA NA NA  0 NA  5  0 NA NA NA NA  2  1 NA  0 NA NA NA
-##  [24] NA NA NA NA NA NA NA NA NA NA  0  0 NA NA NA NA NA  0  0 NA NA  0 NA
-##  [47] NA  0  1 NA NA NA NA NA NA NA NA  1 NA  0 NA  0 NA NA  3 NA NA  0 NA
-##  [70] NA NA NA NA NA NA NA  5  4  4  1 NA NA  0 NA NA NA NA NA  0  0 NA NA
-##  [93] NA NA NA  0 NA  1  1 NA NA NA NA NA NA NA NA NA  2 NA  0  0 NA NA NA
-## [116] NA  0  0 NA  0 NA NA NA NA NA NA NA NA NA NA NA NA NA  0  0 NA NA NA
-## [139] NA NA  0  0 NA NA  0 NA NA  0  0 NA NA NA NA NA NA NA NA  0 NA  0 NA
-## [162]  0 NA NA  0 NA NA  0 NA NA NA NA NA NA NA NA  0  0  0  0 NA NA  0 NA
-## [185] NA NA NA NA  0  0 NA NA NA NA NA  0 NA  0  0 NA NA NA NA NA NA NA NA
-## [208] NA  0 NA  0  0 NA NA NA NA  2  0 NA  0 NA NA NA NA NA NA NA NA NA NA
-## [231] NA NA NA  0  0 NA NA NA NA NA  0  0 NA NA  0 NA NA  0  0 NA NA NA NA
-## [254] NA NA NA NA  0 NA  0 NA  0 NA NA  0 NA NA  0 NA NA NA NA NA NA NA NA
-## [277]  0  0  0  1 NA NA  2 NA NA NA NA NA  0  4 NA NA NA NA NA  0 NA  0  0
-## [300] NA NA NA NA NA NA NA NA NA  0 NA  0  0 NA NA NA NA  3  0 NA  0 NA NA
-## [323] NA NA NA NA NA NA NA NA NA NA NA  0  0 NA NA NA NA NA  0  0 NA NA  0
-## [346] NA NA  2  0 NA NA NA NA NA NA NA NA  0 NA  0 NA  0 NA NA  0 NA NA  0
-## [369] NA NA NA NA NA NA NA NA  0  0  0  1 NA NA  2 NA NA NA NA NA  0  1 NA
-## [392] NA NA NA NA  2 NA  0  0 NA NA NA NA NA NA NA NA NA  0 NA  0  2 NA NA
-## [415] NA NA  0  0 NA  3 NA NA NA NA NA NA NA NA NA NA NA NA NA  2  7 NA NA
-## [438] NA NA NA  1  4 NA NA 11 NA NA  0  0 NA NA NA NA NA NA NA NA  1 NA  2
-## [461] NA  1 NA NA  0 NA NA  5 NA NA NA NA NA NA NA NA  0  0  0  0 NA NA  0
-## [484] NA NA NA NA NA  0  1 NA NA NA NA NA  0 NA  0  0 NA NA NA NA NA NA NA
-## [507] NA NA  0 NA  0  0 NA NA NA NA  0  0 NA  0 NA NA NA NA NA NA NA NA NA
-## [530] NA NA NA NA  0  0 NA NA NA NA NA  0  0 NA NA  0 NA NA  0  0 NA NA NA
-## [553] NA NA NA NA NA  1 NA  0 NA  0 NA NA  0 NA NA  0 NA NA NA NA NA NA NA
-## [576] NA  2  0  0  1 NA NA  0 NA NA NA NA NA  2  0 NA NA NA NA NA  0 NA  0
-## [599]  0 NA</code></pre>
+})
+
+message(&quot;Tests pass&quot;)</code></pre>
+<pre><code>## Tests pass</code></pre>
+<p>So far, so good. (You don’t need to manually add the <code>message()</code> line under normal circumstances as you get feedback from <code>testthat</code> in interactive mode, but it’s useful here to see if the tests are successful).</p>
+<p>Now I want to test to see if the maximum number of units is sensible. I didn’t know in advance what the maximum number of drinks should be, but I worked out that 180 was a sensible maximum for the individual drinks (and therefore 1080 for the total); this is where your domain knowledge comes in:</p>
+<pre class="r"><code>test_that(&quot;Calculated maximum units are 180.0/1080.0&quot;, {
+  expect_lte(max(bcs70$beer_units, na.rm = TRUE), 180.0)
+  expect_lte(max(bcs70$cider_units, na.rm = TRUE), 180.0)
+  expect_lte(max(bcs70$sherry_units, na.rm = TRUE), 180.0)
+  expect_lte(max(bcs70$wine_units, na.rm = TRUE), 180.0)
+  expect_lte(max(bcs70$shandy_units, na.rm = TRUE), 180.0)
+  expect_lte(max(bcs70$spirits_units, na.rm = TRUE), 180.0)
+  expect_lte(max(bcs70$total_units, na.rm = TRUE), 1080.0)
+})
+
+message(&quot;Tests pass&quot;)</code></pre>
+<pre><code>## Tests pass</code></pre>
