@@ -8,9 +8,9 @@ tags: ["r", "rstats", "test", "unit test", "testthat"]
 
 
 
-<p>I’ve written and spoken before about how important it is to <a href="blog/unit-testing-in-r/">test your functions and data analysis scripts</a>. In this tutorial I revisit these ideas and demonstrate how and why to test your data. I use <code>testthat</code> in <code>R</code> although the ideas are language–agnostic. I decided to revisit these ideas and write this tutorial based on my experience of calculating the number of units of alcohol the panel members in the <a href="https://cls.ucl.ac.uk/cls-studies/">NCDS and BCS70 birth cohorts</a> drank at different time points. I initially thought this would be a straightforward mathematical calculation but this turned out to be vastly more complicated than I thought (it always does!). My tests of the data identified the problem (something I would likely have missed without them) and confirmed when I had solved the problem.</p>
+<p>I’ve written and spoken before about how important it is to <a href="blog/unit-testing-in-r/">test your functions and data analysis scripts</a>. In this tutorial I revisit these ideas and demonstrate how and why to test your data. I use <code>testthat</code> in <code>R</code> although the ideas are language–agnostic. I decided to revisit these ideas and write this tutorial based on my recent experience of calculating the number of units of alcohol the panel members in the <a href="https://cls.ucl.ac.uk/cls-studies/">NCDS and BCS70 birth cohorts</a> drank at different time points. I initially thought this would be a straightforward mathematical calculation but this turned out to be vastly more complicated than I thought (it always does!). My tests of the data identified the problem (something I would likely have missed without them) and confirmed when I had solved it.</p>
 <!--more-->
-<p>I am currently using the NCDS and BCS70 birth cohort data sets to model alcohol consumption at different time point. Panel members were asked questions about the type and quantity of drinks they consumed in the past seven days, and we decided to convert these into just units of alcohol consumed to simplify the modelling. For example, at most time points cohort members were asked how many pints or glasses of beer, wine, and spirits they had consumed in the past seven days. One pint of beer does not contain the same amount of alcohol as one glass of wine; if we were to include these items individually this makes the model quite difficult to interpret. By calculating units of alcohol we only need to include one term in the model making it easier to produce and more intuitive to interpret.</p>
+<p>I am currently using the NCDS and BCS70 birth cohort data sets to model alcohol consumption at different time points. Panel members were asked questions about the type and quantity of drinks they consumed in the past seven days, and we decided to convert these into just units of alcohol consumed to simplify the modelling. For example, at most time points cohort members were asked how many pints or glasses of beer, wine, and spirits they had consumed in the past seven days. One pint of beer does not contain the same amount of alcohol as one glass of wine; if we were to include these items individually this makes the model quite difficult to interpret. By calculating units of alcohol we only need to include one term in the model making it easier to produce and more intuitive to interpret.</p>
 <p>For this example I’m going to take an extract from the BCS70 cohort in 1986 when they were aged 16, but the other time points and cohort raised very similar issues because they were recorded in very similar ways. I obviously can’t include actual BCS70 data as it is restricted (but if you’re a UK academic researcher you can download the <a href="https://beta.ukdataservice.ac.uk/datacatalogue/studies/study?id=3535">BCS70 sixteen–year follow–up (1986)</a> yourself). I’ve taken a sample of 100 respondents and removed their given IDs and replaced these with just a unique integer. In all other respects I’ve constructed the example data to be as close to the original data as possible, including the number of completed/missing responses. The issues I raise with this example data set are very real based on the actual issues I encountered (and which are themselves pretty typical of the kind of issues of social science research). You can <a href="https://philmikejones.me/tutorials/2019-03-22-test-your-data/bcs70.csv">download my example data</a> or load it directly into <code>R</code>.</p>
 <pre class="r"><code># if necessary run:
 # install.packages(c(&quot;readr&quot;, &quot;dplyr&quot;))
@@ -62,7 +62,7 @@ bcs70 = read_csv(url)</code></pre>
 ## 5    99          1     1     0      0     0      0       0
 ## 6   100         NA    NA    NA     NA    NA     NA      NA</code></pre>
 <p>Like all social science data it is a bit messy. We can see there are a lot of completely missing cases (<code>NA</code>) so these respondents exist at some point in the BCS70 but were not asked the alcohol questions (or any questions) in 1986. Those with answers look like they have a value in each question (even if it’s <code>0.0</code>). So let’s get to it.</p>
-<p>My approach here is to calculate the number of units of each drink type consumed and create a new variable for each. So for <code>beer</code> I will calculate <code>beer_units</code>, <code>cider</code> I will calculate <code>cider_units</code>, and so on. I will therefore be using <code>mutate()</code> in the <code>dplyr()</code> package for these calculations so that existing variables are not removed. I will then simply add these units up to arrive at the total units consumed in the past seven days.</p>
+<p>My approach here is to calculate the number of units of each drink type consumed and create a new variable for each. So for <code>beer</code> I will calculate <code>beer_units</code>, <code>cider</code> I will calculate <code>cider_units</code>, and so on. I will therefore be using <code>mutate()</code> in the <code>dplyr()</code> package for these calculations so that existing variables are not removed.</p>
 <pre class="r"><code>bcs70 =
   bcs70 %&gt;%
   mutate(
@@ -91,7 +91,33 @@ bcs70</code></pre>
 ## # … with 90 more rows, and 5 more variables: cider_units &lt;dbl&gt;,
 ## #   sherry_units &lt;dbl&gt;, wine_units &lt;dbl&gt;, shandy_units &lt;dbl&gt;,
 ## #   spirits_units &lt;dbl&gt;</code></pre>
-<p>To test this has worked I create a test suite. The easiest way to do this is with the <code>usethis</code> package:</p>
+<p>After I’ve calculated the units for each individual drink I’ll first try simply adding them up to arrive at the number of units consumed in the past seven days:</p>
+<pre class="r"><code>bcs70 =
+  bcs70 %&gt;%
+  mutate(
+    total_units =
+      beer_units + cider_units + sherry_units + wine_units +
+      shandy_units + spirits_units
+  )
+
+bcs70</code></pre>
+<pre><code>## # A tibble: 100 x 15
+##    bcsid days_drink  beer cider sherry  wine shandy spirits beer_units
+##    &lt;dbl&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;      &lt;dbl&gt;
+##  1     1         NA    NA    NA     NA    NA     NA      NA         NA
+##  2     2         NA    NA    NA     NA    NA     NA      NA         NA
+##  3     3         NA    NA    NA     NA    NA     NA      NA         NA
+##  4     4         NA    NA    NA     NA    NA     NA      NA         NA
+##  5     5         NA    NA    NA     NA    NA     NA      NA         NA
+##  6     6         NA    NA    NA     NA    NA     NA      NA         NA
+##  7     7         NA    NA    NA     NA    NA     NA      NA         NA
+##  8     8         NA    NA    NA     NA    NA     NA      NA         NA
+##  9     9          1     0     2      0     0      0       0          0
+## 10    10         NA    NA    NA     NA    NA     NA      NA         NA
+## # … with 90 more rows, and 6 more variables: cider_units &lt;dbl&gt;,
+## #   sherry_units &lt;dbl&gt;, wine_units &lt;dbl&gt;, shandy_units &lt;dbl&gt;,
+## #   spirits_units &lt;dbl&gt;, total_units &lt;dbl&gt;</code></pre>
+<p>To test to see if this worked I create a test suite. The easiest way to do this is with the <code>usethis</code> package:</p>
 <pre class="r"><code># install.packages(&quot;usethis&quot;)
 library(&quot;usethis&quot;)
 
@@ -106,4 +132,61 @@ test_that(&quot;Calculated units are numeric&quot;, {
   expect_type(bcs70$wine_units, &quot;double&quot;)
   expect_type(bcs70$shandy_units, &quot;double&quot;)
   expect_type(bcs70$spirits_units, &quot;double&quot;)
+  expect_type(bcs70$total_units, &quot;double&quot;)
 })</code></pre>
+<p>Next I want to test that the number of units calculated are plausible amounts. The minimum number of units should be <code>0.0</code>; it’s not possible to consume a negative number of units.</p>
+<pre class="r"><code>test_that(&quot;Calculated minimum units are 0.0&quot;, {
+  expect_gte(min(bcs70$beer_units), 0.0)
+  expect_gte(min(bcs70$cider_units), 0.0)
+  expect_gte(min(bcs70$sherry_units), 0.0)
+  expect_gte(min(bcs70$wine_units), 0.0)
+  expect_gte(min(bcs70$shandy_units), 0.0)
+  expect_gte(min(bcs70$spirits_units), 0.0)
+  expect_gte(min(bcs70$total_units), 0.0)
+})</code></pre>
+<p>If you run the code above, the tests will fail. This is because the <code>min</code> of a vector with an <code>NA</code> in is <code>NA</code>: i.e. the <code>min</code> of <code>bcs70$beer</code> is <code>NA</code> because there’s an <code>NA</code> in that vector:</p>
+<pre class="r"><code>is.na(min(bcs70$beer))</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<p>So we must modify our tests to exclude the NAs with <a href="https://www.rdocumentation.org/packages/base/versions/3.5.3/topics/Extremes"><code>na.rm = TRUE</code></a>:</p>
+<pre class="r"><code>test_that(&quot;Calculated minimum units are 0.0&quot;, {
+  expect_gte(min(bcs70$beer_units, na.rm = TRUE), 0.0)
+  expect_gte(min(bcs70$cider_units, na.rm = TRUE), 0.0)
+  expect_gte(min(bcs70$sherry_units, na.rm = TRUE), 0.0)
+  expect_gte(min(bcs70$wine_units, na.rm = TRUE), 0.0)
+  expect_gte(min(bcs70$shandy_units, na.rm = TRUE), 0.0)
+  expect_gte(min(bcs70$spirits_units, na.rm = TRUE), 0.0)
+  expect_gte(min(bcs70$total_units, na.rm = TRUE), 0.0)
+})</code></pre>
+<p>So far, so good. I also want to test to see if the maximum number of units is sensible. I don’t know in advance what the maximum number of drinks is, but we can work that out:</p>
+<pre class="r"><code>pmax(
+  c(bcs70$beer, bcs70$cider, bcs70$sherry, bcs70$wine, bcs70$shandy,
+    bcs70$spirits),
+  na.rm = TRUE
+)</code></pre>
+<pre><code>##   [1] NA NA NA NA NA NA NA NA  0 NA  5  0 NA NA NA NA  2  1 NA  0 NA NA NA
+##  [24] NA NA NA NA NA NA NA NA NA NA  0  0 NA NA NA NA NA  0  0 NA NA  0 NA
+##  [47] NA  0  1 NA NA NA NA NA NA NA NA  1 NA  0 NA  0 NA NA  3 NA NA  0 NA
+##  [70] NA NA NA NA NA NA NA  5  4  4  1 NA NA  0 NA NA NA NA NA  0  0 NA NA
+##  [93] NA NA NA  0 NA  1  1 NA NA NA NA NA NA NA NA NA  2 NA  0  0 NA NA NA
+## [116] NA  0  0 NA  0 NA NA NA NA NA NA NA NA NA NA NA NA NA  0  0 NA NA NA
+## [139] NA NA  0  0 NA NA  0 NA NA  0  0 NA NA NA NA NA NA NA NA  0 NA  0 NA
+## [162]  0 NA NA  0 NA NA  0 NA NA NA NA NA NA NA NA  0  0  0  0 NA NA  0 NA
+## [185] NA NA NA NA  0  0 NA NA NA NA NA  0 NA  0  0 NA NA NA NA NA NA NA NA
+## [208] NA  0 NA  0  0 NA NA NA NA  2  0 NA  0 NA NA NA NA NA NA NA NA NA NA
+## [231] NA NA NA  0  0 NA NA NA NA NA  0  0 NA NA  0 NA NA  0  0 NA NA NA NA
+## [254] NA NA NA NA  0 NA  0 NA  0 NA NA  0 NA NA  0 NA NA NA NA NA NA NA NA
+## [277]  0  0  0  1 NA NA  2 NA NA NA NA NA  0  4 NA NA NA NA NA  0 NA  0  0
+## [300] NA NA NA NA NA NA NA NA NA  0 NA  0  0 NA NA NA NA  3  0 NA  0 NA NA
+## [323] NA NA NA NA NA NA NA NA NA NA NA  0  0 NA NA NA NA NA  0  0 NA NA  0
+## [346] NA NA  2  0 NA NA NA NA NA NA NA NA  0 NA  0 NA  0 NA NA  0 NA NA  0
+## [369] NA NA NA NA NA NA NA NA  0  0  0  1 NA NA  2 NA NA NA NA NA  0  1 NA
+## [392] NA NA NA NA  2 NA  0  0 NA NA NA NA NA NA NA NA NA  0 NA  0  2 NA NA
+## [415] NA NA  0  0 NA  3 NA NA NA NA NA NA NA NA NA NA NA NA NA  2  7 NA NA
+## [438] NA NA NA  1  4 NA NA 11 NA NA  0  0 NA NA NA NA NA NA NA NA  1 NA  2
+## [461] NA  1 NA NA  0 NA NA  5 NA NA NA NA NA NA NA NA  0  0  0  0 NA NA  0
+## [484] NA NA NA NA NA  0  1 NA NA NA NA NA  0 NA  0  0 NA NA NA NA NA NA NA
+## [507] NA NA  0 NA  0  0 NA NA NA NA  0  0 NA  0 NA NA NA NA NA NA NA NA NA
+## [530] NA NA NA NA  0  0 NA NA NA NA NA  0  0 NA NA  0 NA NA  0  0 NA NA NA
+## [553] NA NA NA NA NA  1 NA  0 NA  0 NA NA  0 NA NA  0 NA NA NA NA NA NA NA
+## [576] NA  2  0  0  1 NA NA  0 NA NA NA NA NA  2  0 NA NA NA NA NA  0 NA  0
+## [599]  0 NA</code></pre>

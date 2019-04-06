@@ -57,7 +57,6 @@ So let's get to it.
 My approach here is to calculate the number of units of each drink type consumed and create a new variable for each.
 So for `beer` I will calculate `beer_units`, `cider` I will calculate `cider_units`, and so on.
 I will therefore be using `mutate()` in the `dplyr()` package for these calculations so that existing variables are not removed.
-I will then simply add these units up to arrive at the total units consumed in the past seven days.
 
 ```{r calculate-units}
 bcs70 =
@@ -69,7 +68,16 @@ bcs70 =
     wine_units = wine * 1.8,
     shandy_units = shandy * 2.3 / 2,
     spirits_units = spirits * 1.0
-  ) %>%
+  )
+
+bcs70
+```
+
+After I've calculated the units for each individual drink I'll first try simply adding them up to arrive at the number of units consumed in the past seven days:
+
+```{r total-units}
+bcs70 =
+  bcs70 %>%
   mutate(
     total_units =
       beer_units + cider_units + sherry_units + wine_units +
@@ -79,7 +87,7 @@ bcs70 =
 bcs70
 ```
 
-To test this has worked I create a test suite.
+To test to see if this worked I create a test suite.
 The easiest way to do this is with the `usethis` package:
 
 ```{r setup-tests, eval=FALSE}
@@ -102,15 +110,54 @@ test_that("Calculated units are numeric", {
   expect_type(bcs70$wine_units, "double")
   expect_type(bcs70$shandy_units, "double")
   expect_type(bcs70$spirits_units, "double")
+  expect_type(bcs70$total_units, "double")
 })
 ```
 
 Next I want to test that the number of units calculated are plausible amounts.
-The minimum number of units should be `0.0`, while the total maximum should be the sum of the individual maximum number of units.
+The minimum number of units should be `0.0`; it's not possible to consume a negative number of units.
 
-```{r test-range}
-test_that("Calculated units are in plausible range", {
+```{r test-range, eval=FALSE}
+test_that("Calculated minimum units are 0.0", {
+  expect_gte(min(bcs70$beer_units), 0.0)
+  expect_gte(min(bcs70$cider_units), 0.0)
+  expect_gte(min(bcs70$sherry_units), 0.0)
+  expect_gte(min(bcs70$wine_units), 0.0)
+  expect_gte(min(bcs70$shandy_units), 0.0)
+  expect_gte(min(bcs70$spirits_units), 0.0)
   expect_gte(min(bcs70$total_units), 0.0)
-  expect_lte(max(bcs70_total_units), )
 })
+```
+
+If you run the code above, the tests will fail.
+This is because the `min` of a vector with an `NA` in is `NA`: i.e. the `min` of `bcs70$beer` is `NA` because there's an `NA` in that vector:
+
+```{r min-na}
+is.na(min(bcs70$beer))
+```
+
+So we must modify our tests to exclude the NAs with [`na.rm = TRUE`](https://www.rdocumentation.org/packages/base/versions/3.5.3/topics/Extremes):
+
+```{r test-range-na}
+test_that("Calculated minimum units are 0.0", {
+  expect_gte(min(bcs70$beer_units, na.rm = TRUE), 0.0)
+  expect_gte(min(bcs70$cider_units, na.rm = TRUE), 0.0)
+  expect_gte(min(bcs70$sherry_units, na.rm = TRUE), 0.0)
+  expect_gte(min(bcs70$wine_units, na.rm = TRUE), 0.0)
+  expect_gte(min(bcs70$shandy_units, na.rm = TRUE), 0.0)
+  expect_gte(min(bcs70$spirits_units, na.rm = TRUE), 0.0)
+  expect_gte(min(bcs70$total_units, na.rm = TRUE), 0.0)
+})
+```
+
+So far, so good.
+I also want to test to see if the maximum number of units is sensible.
+I don't know in advance what the maximum number of drinks is, but we can work that out:
+
+```{r max-drinks}
+pmax(
+  c(bcs70$beer, bcs70$cider, bcs70$sherry, bcs70$wine, bcs70$shandy,
+    bcs70$spirits),
+  na.rm = TRUE
+)
 ```
