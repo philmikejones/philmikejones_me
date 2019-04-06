@@ -32,12 +32,21 @@ In all other respects I've constructed the example data to be as close to the or
 The issues I raise with this example data set are very real based on the actual issues I encountered (and which are themselves pretty typical of the kind of issues of social science research).
 You can [download my example data](https://philmikejones.me/tutorials/2019-03-22-test-your-data/bcs70.csv) or load it directly into `R`.
 
-```{r download-data}
+As with any script, first let's load the packages we need:
+
+```{r packages, message=FALSE}
 # if necessary run:
-# install.packages(c("readr", "dplyr"))
+# install.packages(c("readr", "dplyr", "testthat", "usethis"))
+
 library("readr")
 library("dplyr")
+library("usethis")
+library("testthat")
+```
 
+Now download the example data we'll use:
+
+```{r download-data}
 url = "~/gits/philmikejones_me/static/tutorials/2019-03-22-test-your-data/bcs70.csv"
 bcs70 = read_csv(url)
 ```
