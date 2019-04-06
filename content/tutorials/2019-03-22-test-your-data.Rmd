@@ -13,13 +13,13 @@ library("testthat")
 I've written and spoken before about how important it is to [test your functions and data analysis scripts](blog/unit-testing-in-r/).
 In this tutorial I revisit these ideas and demonstrate how and why to test your data.
 I use `testthat` in `R` although the ideas are language--agnostic.
-I decided to revisit these ideas and write this tutorial based on my experience of calculating the number of units of alcohol the panel members in the [NCDS and BCS70 birth cohorts](https://cls.ucl.ac.uk/cls-studies/) drank at different time points.
+I decided to revisit these ideas and write this tutorial based on my recent experience of calculating the number of units of alcohol the panel members in the [NCDS and BCS70 birth cohorts](https://cls.ucl.ac.uk/cls-studies/) drank at different time points.
 I initially thought this would be a straightforward mathematical calculation but this turned out to be vastly more complicated than I thought (it always does!).
-My tests of the data identified the problem (something I would likely have missed without them) and confirmed when I had solved the problem.
+My tests of the data identified the problem (something I would likely have missed without them) and confirmed when I had solved it.
 
 <!--more-->
 
-I am currently using the NCDS and BCS70 birth cohort data sets to model alcohol consumption at different time point.
+I am currently using the NCDS and BCS70 birth cohort data sets to model alcohol consumption at different time points.
 Panel members were asked questions about the type and quantity of drinks they consumed in the past seven days, and we decided to convert these into just units of alcohol consumed to simplify the modelling.
 For example, at most time points cohort members were asked how many pints or glasses of beer, wine, and spirits they had consumed in the past seven days.
 One pint of beer does not contain the same amount of alcohol as one glass of wine; if we were to include these items individually this makes the model quite difficult to interpret.
@@ -69,6 +69,11 @@ bcs70 =
     wine_units = wine * 1.8,
     shandy_units = shandy * 2.3 / 2,
     spirits_units = spirits * 1.0
+  ) %>%
+  mutate(
+    total_units =
+      beer_units + cider_units + sherry_units + wine_units +
+      shandy_units + spirits_units
   )
 
 bcs70
@@ -87,7 +92,7 @@ use_test("test-bcs70")
 This creates the necessary `tests/` directories and sets up a test file.
 First set up a context and load the necessary libraries, and as our first test I want to ensure the calculated `_units` variables are numeric (specifically double):
 
-```{r begin-test}
+```{r test-type}
 context("Test bcs70")
 
 test_that("Calculated units are numeric", {
@@ -97,5 +102,15 @@ test_that("Calculated units are numeric", {
   expect_type(bcs70$wine_units, "double")
   expect_type(bcs70$shandy_units, "double")
   expect_type(bcs70$spirits_units, "double")
+})
+```
+
+Next I want to test that the number of units calculated are plausible amounts.
+The minimum number of units should be `0.0`, while the total maximum should be the sum of the individual maximum number of units.
+
+```{r test-range}
+test_that("Calculated units are in plausible range", {
+  expect_gte(min(bcs70$total_units), 0.0)
+  expect_lte(max(bcs70_total_units), )
 })
 ```
