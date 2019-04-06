@@ -112,11 +112,7 @@ bcs70</code></pre>
 ## #   sherry_units &lt;dbl&gt;, wine_units &lt;dbl&gt;, shandy_units &lt;dbl&gt;,
 ## #   spirits_units &lt;dbl&gt;, total_units &lt;dbl&gt;</code></pre>
 <p>To test to see if this worked I create a test suite. The easiest way to do this is with the <code>usethis</code> package:</p>
-<pre class="r"><code># if necessary run
-# install.packages(c(&quot;usethis&quot;, &quot;testthat&quot;))
-library(&quot;usethis&quot;)
-
-use_test(&quot;test-bcs70&quot;)</code></pre>
+<pre class="r"><code>use_test(&quot;test-bcs70&quot;)</code></pre>
 <p>This creates the necessary <code>tests/</code> directories and sets up a test file. First set up a context and load the necessary libraries, and as our first test I want to ensure the calculated <code>_units</code> variables are numeric (specifically double):</p>
 <pre class="r"><code>context(&quot;Test bcs70&quot;)
 

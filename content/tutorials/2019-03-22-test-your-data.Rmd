@@ -100,10 +100,6 @@ To test to see if this worked I create a test suite.
 The easiest way to do this is with the `usethis` package:
 
 ```{r setup-tests, eval=FALSE}
-# if necessary run
-# install.packages(c("usethis", "testthat"))
-library("usethis")
-
 use_test("test-bcs70")
 ```
 
