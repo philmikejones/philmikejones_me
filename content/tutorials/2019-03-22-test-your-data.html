@@ -174,3 +174,11 @@ message(&quot;Tests pass&quot;)</code></pre>
 
 message(&quot;Tests pass&quot;)</code></pre>
 <pre><code>## Tests pass</code></pre>
+<p>Now I want to check that if there is data in any of the variables then I should have a value in <code>total</code>. For example if I have a non–missing value in <code>beer</code> there should be a value in <code>total</code>. One reason there might not be is if there is an <code>NA</code> in any of the other drink types.</p>
+<pre class="r"><code>bcs70[!is.na(bcs70$beer) &amp; is.na(bcs70$total_units), ]</code></pre>
+<pre><code>## # A tibble: 0 x 15
+## # … with 15 variables: bcsid &lt;dbl&gt;, days_drink &lt;dbl&gt;, beer &lt;dbl&gt;,
+## #   cider &lt;dbl&gt;, sherry &lt;dbl&gt;, wine &lt;dbl&gt;, shandy &lt;dbl&gt;, spirits &lt;dbl&gt;,
+## #   beer_units &lt;dbl&gt;, cider_units &lt;dbl&gt;, sherry_units &lt;dbl&gt;,
+## #   wine_units &lt;dbl&gt;, shandy_units &lt;dbl&gt;, spirits_units &lt;dbl&gt;,
+## #   total_units &lt;dbl&gt;</code></pre>

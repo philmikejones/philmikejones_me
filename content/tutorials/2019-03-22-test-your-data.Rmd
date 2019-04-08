@@ -175,3 +175,11 @@ test_that("Calculated maximum units are 180.0/1080.0", {
 
 message("Tests pass")
 ```
+
+Now I want to check that if there is data in any of the variables then I should have a value in `total`.
+For example if I have a non--missing value in `beer` there should be a value in `total`.
+One reason there might not be is if there is an `NA` in any of the other drink types.
+
+```{r}
+bcs70[!is.na(bcs70$beer) & is.na(bcs70$total_units), ]
+```
