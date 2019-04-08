@@ -15,12 +15,13 @@ tags: ["r", "rstats", "test", "unit test", "testthat"]
 <p>I’ve taken a sample of 100 respondents and removed their given IDs and replaced these with just a unique integer. In all other respects I’ve constructed the example data to be as close to the original data as possible, including the proportion of completed/missing responses. You can <a href="https://philmikejones.me/tutorials/2019-03-22-test-your-data/bcs70.csv">download my example data</a> or load it directly into <code>R</code>.</p>
 <p>As with any script, first let’s load the packages we need:</p>
 <pre class="r"><code># if necessary run:
-# install.packages(c(&quot;readr&quot;, &quot;dplyr&quot;, &quot;testthat&quot;, &quot;usethis&quot;))
+# install.packages(c(&quot;readr&quot;, &quot;dplyr&quot;, &quot;testthat&quot;, &quot;usethis&quot;, &quot;tidyr&quot;))
 
 library(&quot;readr&quot;)
 library(&quot;dplyr&quot;)
 library(&quot;usethis&quot;)
-library(&quot;testthat&quot;)</code></pre>
+library(&quot;testthat&quot;)
+library(&quot;tidyr&quot;)</code></pre>
 <p>Now download the example data we’ll use:</p>
 <pre class="r"><code>url = &quot;~/gits/philmikejones_me/static/tutorials/2019-03-22-test-your-data/bcs70.csv&quot;
 bcs70 = read_csv(url)</code></pre>
@@ -174,11 +175,74 @@ message(&quot;Tests pass&quot;)</code></pre>
 
 message(&quot;Tests pass&quot;)</code></pre>
 <pre><code>## Tests pass</code></pre>
-<p>Now I want to check that if there is data in any of the variables then I should have a value in <code>total</code>. For example if I have a non–missing value in <code>beer</code> there should be a value in <code>total</code>. One reason there might not be is if there is an <code>NA</code> in any of the other drink types.</p>
-<pre class="r"><code>bcs70[!is.na(bcs70$beer) &amp; is.na(bcs70$total_units), ]</code></pre>
-<pre><code>## # A tibble: 0 x 15
-## # … with 15 variables: bcsid &lt;dbl&gt;, days_drink &lt;dbl&gt;, beer &lt;dbl&gt;,
-## #   cider &lt;dbl&gt;, sherry &lt;dbl&gt;, wine &lt;dbl&gt;, shandy &lt;dbl&gt;, spirits &lt;dbl&gt;,
-## #   beer_units &lt;dbl&gt;, cider_units &lt;dbl&gt;, sherry_units &lt;dbl&gt;,
+<p>Next I want to check that if there is data in any of the variables then I should have a value in <code>total</code>. For example if I have a non–missing value in <code>beer</code> there should also be a value in <code>total</code>. I wrote the following tests to check for this:</p>
+<pre class="r"><code>test_that(&quot;No missing data when there should be data&quot;, {
+  expect_false(any(is.na(bcs70$total_units[!is.na(bcs70$beer)])))
+  expect_false(any(is.na(bcs70$total_units[!is.na(bcs70$cider)])))
+  expect_false(any(is.na(bcs70$total_units[!is.na(bcs70$sherry)])))
+  expect_false(any(is.na(bcs70$total_units[!is.na(bcs70$wine)])))
+  # expect_false(any(is.na(bcs70$total_units[!is.na(bcs70$shandy)])))
+  expect_false(any(is.na(bcs70$total_units[!is.na(bcs70$spirits)])))
+})</code></pre>
+<p>Each of these tests is essentially saying, “if there’s data in one of more of the drinks variables (<code>!is.na()</code> means ‘is not missing’) there should not be any missing data in <code>total_units</code>”. Notice though that I’ve commented out the <code>shandy</code> variable. That’s because for at least one respondent they gave a number of shandies consumed but one or more drinks were recorded as missing (and as we’ve seen above a number + <code>NA</code> is <code>NA</code>):</p>
+<pre class="r"><code>is.na(NA_real_ + 2.0)</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<p>We can see this respondent by <code>filter</code>ing:</p>
+<pre class="r"><code>bcs70 %&gt;%
+  filter(!is.na(shandy)) %&gt;%
+  filter(is.na(total_units))</code></pre>
+<pre><code>## # A tibble: 1 x 15
+##   bcsid days_drink  beer cider sherry  wine shandy spirits beer_units
+##   &lt;dbl&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;      &lt;dbl&gt;
+## 1    69          1    NA    NA     NA    NA      2      NA         NA
+## # … with 6 more variables: cider_units &lt;dbl&gt;, sherry_units &lt;dbl&gt;,
 ## #   wine_units &lt;dbl&gt;, shandy_units &lt;dbl&gt;, spirits_units &lt;dbl&gt;,
 ## #   total_units &lt;dbl&gt;</code></pre>
+<p>How to deal with this case, and any others like it in the main dataset? I found the easiest way to solve this was to replace all <code>NA</code>s with <code>0.0</code> in the <code>_units</code> variables to ensure <code>total_units</code> summed correctly. The easiest way to do this is with <code>replace_na()</code> in the <code>tidyr</code> package. I don’t recommend modifying the original variable in place (e.g. <code>beer</code>) but as we’ve calculated <code>beer_units</code> we can correct this instead:</p>
+<pre class="r"><code>bcs70 =
+  bcs70 %&gt;%
+  replace_na(list(
+    beer_units = 0.0,
+    cider_units = 0.0,
+    sherry_units = 0.0,
+    wine_units = 0.0,
+    shandy_units = 0.0,
+    spirits_units = 0.0
+  )) %&gt;%
+  mutate(
+    total_units =
+      beer_units + cider_units + sherry_units + wine_units +
+      shandy_units + spirits_units
+  )
+
+bcs70</code></pre>
+<pre><code>## # A tibble: 100 x 15
+##    bcsid days_drink  beer cider sherry  wine shandy spirits beer_units
+##    &lt;dbl&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;      &lt;dbl&gt;
+##  1     1         NA    NA    NA     NA    NA     NA      NA          0
+##  2     2         NA    NA    NA     NA    NA     NA      NA          0
+##  3     3         NA    NA    NA     NA    NA     NA      NA          0
+##  4     4         NA    NA    NA     NA    NA     NA      NA          0
+##  5     5         NA    NA    NA     NA    NA     NA      NA          0
+##  6     6         NA    NA    NA     NA    NA     NA      NA          0
+##  7     7         NA    NA    NA     NA    NA     NA      NA          0
+##  8     8         NA    NA    NA     NA    NA     NA      NA          0
+##  9     9          1     0     2      0     0      0       0          0
+## 10    10         NA    NA    NA     NA    NA     NA      NA          0
+## # … with 90 more rows, and 6 more variables: cider_units &lt;dbl&gt;,
+## #   sherry_units &lt;dbl&gt;, wine_units &lt;dbl&gt;, shandy_units &lt;dbl&gt;,
+## #   spirits_units &lt;dbl&gt;, total_units &lt;dbl&gt;</code></pre>
+<p>Finally so that I knew which respondents genuinely didn’t drink and which were simply missing I replaced any <code>0.0</code> in <code>total_units</code> if <em>all</em> the drinks were missing.</p>
+<pre class="r"><code>bcs70 =
+  bcs70 %&gt;%
+  mutate(
+    total_units = if_else(
+      {
+        is.na(days_drink) &amp;
+        is.na(beer) &amp; is.na(cider) &amp; is.na(sherry) &amp;
+        is.na(wine) &amp; is.na(shandy) &amp; is.na(spirits)
+      },
+      NA_real_,
+      total_units
+    )
+  )</code></pre>

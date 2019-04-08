@@ -29,12 +29,13 @@ As with any script, first let's load the packages we need:
 
 ```{r packages, message=FALSE}
 # if necessary run:
-# install.packages(c("readr", "dplyr", "testthat", "usethis"))
+# install.packages(c("readr", "dplyr", "testthat", "usethis", "tidyr"))
 
 library("readr")
 library("dplyr")
 library("usethis")
 library("testthat")
+library("tidyr")
 ```
 
 Now download the example data we'll use:
@@ -176,10 +177,76 @@ test_that("Calculated maximum units are 180.0/1080.0", {
 message("Tests pass")
 ```
 
-Now I want to check that if there is data in any of the variables then I should have a value in `total`.
-For example if I have a non--missing value in `beer` there should be a value in `total`.
-One reason there might not be is if there is an `NA` in any of the other drink types.
+Next I want to check that if there is data in any of the variables then I should have a value in `total`.
+For example if I have a non--missing value in `beer` there should also be a value in `total`.
+I wrote the following tests to check for this:
 
-```{r}
-bcs70[!is.na(bcs70$beer) & is.na(bcs70$total_units), ]
+```{r test-no-na-total}
+test_that("No missing data when there should be data", {
+  expect_false(any(is.na(bcs70$total_units[!is.na(bcs70$beer)])))
+  expect_false(any(is.na(bcs70$total_units[!is.na(bcs70$cider)])))
+  expect_false(any(is.na(bcs70$total_units[!is.na(bcs70$sherry)])))
+  expect_false(any(is.na(bcs70$total_units[!is.na(bcs70$wine)])))
+  # expect_false(any(is.na(bcs70$total_units[!is.na(bcs70$shandy)])))
+  expect_false(any(is.na(bcs70$total_units[!is.na(bcs70$spirits)])))
+})
+```
+
+Each of these tests is essentially saying, "if there's data in one of more of the drinks variables (`!is.na()` means 'is not missing') there should not be any missing data in `total_units`".
+Notice though that I've commented out the `shandy` variable.
+That's because for at least one respondent they gave a number of shandies consumed but one or more drinks were recorded as missing (and as we've seen above a number + `NA` is `NA`):
+
+```{r na-sum}
+is.na(NA_real_ + 2.0)
+```
+
+We can see this respondent by `filter`ing:
+
+```{r drink-types-inc-na}
+bcs70 %>%
+  filter(!is.na(shandy)) %>%
+  filter(is.na(total_units))
+```
+
+How to deal with this case, and any others like it in the main dataset?
+I found the easiest way to solve this was to replace all `NA`s with `0.0` in the `_units` variables to ensure `total_units` summed correctly.
+The easiest way to do this is with `replace_na()` in the `tidyr` package.
+I don't recommend modifying the original variable in place (e.g. `beer`) but as we've calculated `beer_units` we can correct this instead:
+
+```{r correct-non-missing}
+bcs70 =
+  bcs70 %>%
+  replace_na(list(
+    beer_units = 0.0,
+    cider_units = 0.0,
+    sherry_units = 0.0,
+    wine_units = 0.0,
+    shandy_units = 0.0,
+    spirits_units = 0.0
+  )) %>%
+  mutate(
+    total_units =
+      beer_units + cider_units + sherry_units + wine_units +
+      shandy_units + spirits_units
+  )
+
+bcs70
+```
+
+Finally so that I knew which respondents genuinely didn't drink and which were simply missing I replaced any `0.0` in `total_units` if *all* the drinks were missing.
+
+```{r return-missing}
+bcs70 =
+  bcs70 %>%
+  mutate(
+    total_units = if_else(
+      {
+        is.na(days_drink) &
+        is.na(beer) & is.na(cider) & is.na(sherry) &
+        is.na(wine) & is.na(shandy) & is.na(spirits)
+      },
+      NA_real_,
+      total_units
+    )
+  )
 ```
