@@ -1,7 +1,7 @@
 ---
 title: "Test your data"
 author: "Phil Mike Jones"
-date: 2019-03-22
+date: 2019-04-09
 categories: "tutorials"
 tags: ["r", "rstats", "test", "unit test", "testthat"]
 ---
@@ -12,7 +12,7 @@ tags: ["r", "rstats", "test", "unit test", "testthat"]
 <!--more-->
 <p>I am currently using the NCDS and BCS70 birth cohort data sets to model alcohol consumption at different time points. Respondents were asked questions about the type and quantity of drinks they consumed in the past seven days, and we decided to convert these into just units of alcohol consumed to simplify the modelling. For example, at most time points cohort members were asked how many pints or glasses of beer, wine, and spirits they had consumed in the past seven days.</p>
 <p>For this example I’m going to take an extract from the BCS70 cohort in 1986 when they were aged 16, but the other time points and cohort raised very similar issues. I obviously can’t include actual BCS70 data as it is restricted (but if you’re a UK academic researcher you can download the <a href="https://beta.ukdataservice.ac.uk/datacatalogue/studies/study?id=3535">BCS70 sixteen–year follow–up (1986)</a> yourself).</p>
-<p>I’ve taken a sample of 100 respondents and removed their given IDs and replaced these with just a unique integer. In all other respects I’ve constructed the example data to be as close to the original data as possible, including the proportion of completed/missing responses. You can <a href="https://philmikejones.me/tutorials/2019-03-22-test-your-data/bcs70.csv">download my example data</a> or load it directly into <code>R</code>.</p>
+<p>I’ve taken a sample of 100 respondents and removed their given IDs and replaced these with just a unique integer. In all other respects I’ve constructed the example data to be as close to the original data as possible, including the proportion of completed/missing responses. You can <a href="https://philmikejones.me/tutorials/2019-04-09-test-your-data/bcs70.csv">download my example data</a> or load it directly into <code>R</code>.</p>
 <p>As with any script, first let’s load the packages we need:</p>
 <pre class="r"><code># if necessary run:
 # install.packages(c(&quot;readr&quot;, &quot;dplyr&quot;, &quot;testthat&quot;, &quot;usethis&quot;, &quot;tidyr&quot;))
@@ -23,7 +23,7 @@ library(&quot;usethis&quot;)
 library(&quot;testthat&quot;)
 library(&quot;tidyr&quot;)</code></pre>
 <p>Now download the example data we’ll use:</p>
-<pre class="r"><code>url = &quot;~/gits/philmikejones_me/static/tutorials/2019-03-22-test-your-data/bcs70.csv&quot;
+<pre class="r"><code>url = &quot;~/gits/philmikejones_me/static/tutorials/2019-04-09-test-your-data/bcs70.csv&quot;
 bcs70 = read_csv(url)</code></pre>
 <pre><code>## Parsed with column specification:
 ## cols(
