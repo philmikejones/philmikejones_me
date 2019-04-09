@@ -41,7 +41,7 @@ library("tidyr")
 Now download the example data we'll use:
 
 ```{r download-data}
-url = "~/gits/philmikejones_me/static/tutorials/2019-04-09-test-your-data/bcs70.csv"
+url = "https://philmikejones.me/tutorials/2019-04-09-test-your-data/bcs70.csv"
 bcs70 = read_csv(url)
 ```
 
