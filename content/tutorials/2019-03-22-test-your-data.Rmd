@@ -90,6 +90,9 @@ bcs70 =
 bcs70
 ```
 
+
+## Set up tests
+
 To test to see if this worked I create a test suite.
 The easiest way to do this is with the `usethis` package:
 
@@ -98,6 +101,9 @@ use_test("test-bcs70")
 ```
 
 This creates the necessary `tests/` directories and sets up a test file.
+
+## Test calculations
+
 First set up a context and load the necessary libraries, and as our first test I want to ensure the calculated `_units` variables are numeric (specifically double):
 
 ```{r test-type}
@@ -177,6 +183,9 @@ test_that("Calculated maximum units are 180.0/1080.0", {
 message("Tests pass")
 ```
 
+
+## Test for missing data
+
 Next I want to check that if there is data in any of the variables then I should have a value in `total`.
 For example if I have a non--missing value in `beer` there should also be a value in `total`.
 I wrote the following tests to check for this:
@@ -241,7 +250,6 @@ bcs70 =
   mutate(
     total_units = if_else(
       {
-        is.na(days_drink) &
         is.na(beer) & is.na(cider) & is.na(sherry) &
         is.na(wine) & is.na(shandy) & is.na(spirits)
       },
@@ -250,3 +258,100 @@ bcs70 =
     )
   )
 ```
+
+Let's review case `69` (identified above) to see if `total_units` is correct:
+
+```{r review-69}
+bcs70 %>%
+  filter(bcsid == 69) %>%
+  select(beer, shandy, total_units)
+```
+
+So even though there is missing data (`NA`) in `beer` the `total_units` has been summed correctly.
+And indeed if we run the tests now, they all pass (note you would not normally duplicate tests in a document, you'd just run them again):
+
+```{r test-no-na-total-fixed}
+test_that("No missing data when there should be data", {
+  expect_false(any(is.na(bcs70$total_units[!is.na(bcs70$beer)])))
+  expect_false(any(is.na(bcs70$total_units[!is.na(bcs70$cider)])))
+  expect_false(any(is.na(bcs70$total_units[!is.na(bcs70$sherry)])))
+  expect_false(any(is.na(bcs70$total_units[!is.na(bcs70$wine)])))
+  expect_false(any(is.na(bcs70$total_units[!is.na(bcs70$shandy)])))
+  expect_false(any(is.na(bcs70$total_units[!is.na(bcs70$spirits)])))
+})
+
+message("Tests pass")
+```
+
+
+## Test for 'true zero'
+
+Now I want to make sure I have a 'true zero' for the respondents that were asked the drinking questions, but that did not drink.
+Notice the `days_drink` variable?
+If this contains data (i.e. is not `NA`) then the respondent was asked the series of drinking questions, and should be included in the valid sample, even if they didn't drink anything.
+Most respondents who were asked `days_drink` who did not drink have `0` coded in the drinks types so that these sum correctly.
+In some cases, though, the drinks data were missing despite the respondent being asked about their drinking behaviour:
+
+```{r days-drink}
+bcs70 %>%
+  filter(!is.na(days_drink), is.na(shandy)) %>%
+  select(bcsid, days_drink, beer, cider, wine, sherry, shandy, spirits, total_units)
+```
+
+To check for this I wrote the following test, which will fail if any respondent with data in `days_drink` also has a missing value in `total_units`:
+
+```{r test-true-zero, eval=FALSE}
+test_that("True zero coded", {
+  expect_false(any(is.na(bcs70$total_units[!is.na(bcs70$days_drink)])))
+})
+```
+
+To fix this I replaced any `NA` in `total_units` with 0, *if* there is data in `days_drink`:
+
+```{r fix-true-zero}
+bcs70 =
+  bcs70 %>%
+  mutate(
+    total_units = if_else(
+      is.na(total_units) & !is.na(days_drink),
+      0.0,
+      total_units
+    )
+  )
+```
+
+Now when I run the test it passes:
+
+```{r retest-true-zero}
+test_that("True zero coded", {
+  expect_false(any(is.na(bcs70$total_units[!is.na(bcs70$days_drink)])))
+})
+
+message("Tests pass")
+```
+
+
+## Conclusion
+
+I hope from this tutorial/example you can see that what can ostensibly be a straightforward task can, on closer inspection, be challenging to get right.
+Testing the calculations and data helped in three main ways:
+
+- Tests helped identify the problem(s).
+- Tests helped verify the problems were solved.
+- Re--running the tests helped ensure the problem didn't return after fixing something else.
+
+For complex data I would recommend writing a test suite and regularly running it when working on any data processing steps.
+
+
+## Scripts
+
+I've bundled the data, data processing, and testing code above into files to download to see how these work in a 'real' project (rather than inline in a blog post).
+
+
+## Resources
+
+The best places to start with writing your own tests (and you should) for #rstats are:
+
+- [Testing](http://r-pkgs.had.co.nz/tests.html) chapter in Hadley Wickham's *R Packages*
+- The [`testthat` documentation](https://testthat.r-lib.org/)
+- The [`testthat` tag on StackOverflow](https://stackoverflow.com/questions/tagged/testthat)

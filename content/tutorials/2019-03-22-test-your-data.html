@@ -113,9 +113,15 @@ bcs70</code></pre>
 ## # … with 90 more rows, and 6 more variables: cider_units &lt;dbl&gt;,
 ## #   sherry_units &lt;dbl&gt;, wine_units &lt;dbl&gt;, shandy_units &lt;dbl&gt;,
 ## #   spirits_units &lt;dbl&gt;, total_units &lt;dbl&gt;</code></pre>
+<div id="set-up-tests" class="section level2">
+<h2>Set up tests</h2>
 <p>To test to see if this worked I create a test suite. The easiest way to do this is with the <code>usethis</code> package:</p>
 <pre class="r"><code>use_test(&quot;test-bcs70&quot;)</code></pre>
-<p>This creates the necessary <code>tests/</code> directories and sets up a test file. First set up a context and load the necessary libraries, and as our first test I want to ensure the calculated <code>_units</code> variables are numeric (specifically double):</p>
+<p>This creates the necessary <code>tests/</code> directories and sets up a test file.</p>
+</div>
+<div id="test-calculations" class="section level2">
+<h2>Test calculations</h2>
+<p>First set up a context and load the necessary libraries, and as our first test I want to ensure the calculated <code>_units</code> variables are numeric (specifically double):</p>
 <pre class="r"><code>context(&quot;Test bcs70&quot;)
 
 test_that(&quot;Calculated units are numeric&quot;, {
@@ -175,6 +181,9 @@ message(&quot;Tests pass&quot;)</code></pre>
 
 message(&quot;Tests pass&quot;)</code></pre>
 <pre><code>## Tests pass</code></pre>
+</div>
+<div id="test-for-missing-data" class="section level2">
+<h2>Test for missing data</h2>
 <p>Next I want to check that if there is data in any of the variables then I should have a value in <code>total</code>. For example if I have a non–missing value in <code>beer</code> there should also be a value in <code>total</code>. I wrote the following tests to check for this:</p>
 <pre class="r"><code>test_that(&quot;No missing data when there should be data&quot;, {
   expect_false(any(is.na(bcs70$total_units[!is.na(bcs70$beer)])))
@@ -238,7 +247,6 @@ bcs70</code></pre>
   mutate(
     total_units = if_else(
       {
-        is.na(days_drink) &amp;
         is.na(beer) &amp; is.na(cider) &amp; is.na(sherry) &amp;
         is.na(wine) &amp; is.na(shandy) &amp; is.na(spirits)
       },
@@ -246,3 +254,79 @@ bcs70</code></pre>
       total_units
     )
   )</code></pre>
+<p>Let’s review case <code>69</code> (identified above) to see if <code>total_units</code> is correct:</p>
+<pre class="r"><code>bcs70 %&gt;%
+  filter(bcsid == 69) %&gt;%
+  select(beer, shandy, total_units)</code></pre>
+<pre><code>## # A tibble: 1 x 3
+##    beer shandy total_units
+##   &lt;dbl&gt;  &lt;dbl&gt;       &lt;dbl&gt;
+## 1    NA      2         2.3</code></pre>
+<p>So even though there is missing data (<code>NA</code>) in <code>beer</code> the <code>total_units</code> has been summed correctly. And indeed if we run the tests now, they all pass (note you would not normally duplicate tests in a document, you’d just run them again):</p>
+<pre class="r"><code>test_that(&quot;No missing data when there should be data&quot;, {
+  expect_false(any(is.na(bcs70$total_units[!is.na(bcs70$beer)])))
+  expect_false(any(is.na(bcs70$total_units[!is.na(bcs70$cider)])))
+  expect_false(any(is.na(bcs70$total_units[!is.na(bcs70$sherry)])))
+  expect_false(any(is.na(bcs70$total_units[!is.na(bcs70$wine)])))
+  expect_false(any(is.na(bcs70$total_units[!is.na(bcs70$shandy)])))
+  expect_false(any(is.na(bcs70$total_units[!is.na(bcs70$spirits)])))
+})
+
+message(&quot;Tests pass&quot;)</code></pre>
+<pre><code>## Tests pass</code></pre>
+</div>
+<div id="test-for-true-zero" class="section level2">
+<h2>Test for ‘true zero’</h2>
+<p>Now I want to make sure I have a ‘true zero’ for the respondents that were asked the drinking questions, but that did not drink. Notice the <code>days_drink</code> variable? If this contains data (i.e. is not <code>NA</code>) then the respondent was asked the series of drinking questions, and should be included in the valid sample, even if they didn’t drink anything. Most respondents who were asked <code>days_drink</code> who did not drink have <code>0</code> coded in the drinks types so that these sum correctly. In some cases, though, the drinks data were missing despite the respondent being asked about their drinking behaviour:</p>
+<pre class="r"><code>bcs70 %&gt;%
+  filter(!is.na(days_drink), is.na(shandy)) %&gt;%
+  select(bcsid, days_drink, beer, cider, wine, sherry, shandy, spirits, total_units)</code></pre>
+<pre><code>## # A tibble: 1 x 9
+##   bcsid days_drink  beer cider  wine sherry shandy spirits total_units
+##   &lt;dbl&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;       &lt;dbl&gt;
+## 1    19          1    NA    NA    NA     NA     NA      NA          NA</code></pre>
+<p>To check for this I wrote the following test, which will fail if any respondent with data in <code>days_drink</code> also has a missing value in <code>total_units</code>:</p>
+<pre class="r"><code>test_that(&quot;True zero coded&quot;, {
+  expect_false(any(is.na(bcs70$total_units[!is.na(bcs70$days_drink)])))
+})</code></pre>
+<p>To fix this I replaced any <code>NA</code> in <code>total_units</code> with 0, <em>if</em> there is data in <code>days_drink</code>:</p>
+<pre class="r"><code>bcs70 =
+  bcs70 %&gt;%
+  mutate(
+    total_units = if_else(
+      is.na(total_units) &amp; !is.na(days_drink),
+      0.0,
+      total_units
+    )
+  )</code></pre>
+<p>Now when I run the test it passes:</p>
+<pre class="r"><code>test_that(&quot;True zero coded&quot;, {
+  expect_false(any(is.na(bcs70$total_units[!is.na(bcs70$days_drink)])))
+})
+
+message(&quot;Tests pass&quot;)</code></pre>
+<pre><code>## Tests pass</code></pre>
+</div>
+<div id="conclusion" class="section level2">
+<h2>Conclusion</h2>
+<p>I hope from this tutorial/example you can see that what can ostensibly be a straightforward task can, on closer inspection, be challenging to get right. Testing the calculations and data helped in three main ways:</p>
+<ul>
+<li>Tests helped identify the problem(s).</li>
+<li>Tests helped verify the problems were solved.</li>
+<li>Re–running the tests helped ensure the problem didn’t return after fixing something else.</li>
+</ul>
+<p>For complex data I would recommend writing a test suite and regularly running it when working on any data processing steps.</p>
+</div>
+<div id="scripts" class="section level2">
+<h2>Scripts</h2>
+<p>I’ve bundled the data, data processing, and testing code above into files to download to see how these work in a ‘real’ project (rather than inline in a blog post).</p>
+</div>
+<div id="resources" class="section level2">
+<h2>Resources</h2>
+<p>The best places to start with writing your own tests (and you should) for #rstats are:</p>
+<ul>
+<li><a href="http://r-pkgs.had.co.nz/tests.html">Testing</a> chapter in Hadley Wickham’s <em>R Packages</em></li>
+<li>The <a href="https://testthat.r-lib.org/"><code>testthat</code> documentation</a></li>
+<li>The <a href="https://stackoverflow.com/questions/tagged/testthat"><code>testthat</code> tag on StackOverflow</a></li>
+</ul>
+</div>
