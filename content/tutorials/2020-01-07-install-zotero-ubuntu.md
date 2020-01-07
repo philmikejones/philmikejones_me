@@ -1,9 +1,9 @@
 ---
-title: "Install QGIS in Ubuntu"
+title: "Install Zotero in Ubuntu"
 author: "Phil Mike Jones"
-date: 2019-01-03
+date: 2020-01-07
 categories: "tutorials"
-tags: ["gis", "qgis", "install", "ubuntu"]
+tags: ["zotero", "install", "ubuntu"]
 ---
 
 Instructions to install Zotero 5 in Ubuntu Bionic Beaver 19.04 LTS, as of January 2020.
