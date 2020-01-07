@@ -29,10 +29,7 @@ I previously worked on the "[Long-term impacts of 'Thatcherism': crime, politics
 
 ## Publications
 
-You can see my publications on my ORCiD profile:
-
-<iframe width=800 src="https://orcid.org/0000-0001-5173-3245"></iframe>
-
+You can see my publications on my [ORCiD profile](https://orcid.org/0000-0001-5173-3245).
 
 ## Teaching
 
