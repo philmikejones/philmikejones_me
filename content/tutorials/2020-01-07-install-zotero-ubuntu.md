@@ -1,12 +1,12 @@
 ---
-title: "Install QGIS in Ubuntu"
+title: "Install Zotero in Ubuntu"
 author: "Phil Mike Jones"
-date: 2019-01-03
+date: 2020-01-07
 categories: "tutorials"
-tags: ["gis", "qgis", "install", "ubuntu"]
+tags: ["zotero", "install", "ubuntu"]
 ---
 
-Instructions to install Zotero 5 in Ubuntu Bionic Beaver 19.04 LTS, as of January 2020.
+Instructions to install Zotero 5 in Ubuntu Bionic Beaver 18.04 LTS, as of January 2020.
 
 <!--more-->
 
@@ -40,7 +40,7 @@ sudo chown user:group /opt/zotero
 
 (where `user` is you and `group` is an optional group name (possibly `staff` or similar)).
 You may also want to change the [permissions](http://linuxcommand.org/lc3_lts0090.php) so that only you can write to this folder.
-For example, I want read, write, and execute permissions for myself (`7`), read permission (`5`) for group, and no permissions (`0`) (so others can read it but not write to it and bodge it up):
+For example, I want read, write, and execute permissions for myself (`7`), read permission (`5`) for group, and no permissions for everyone else (`0`) (so others can read it but not write to it and bodge it up):
 
 ```bash
 chmod 750 -R /opt/zotero
@@ -91,3 +91,8 @@ Then you can create your symlink as described in the installation instructions:
 ```bash
 ln -s /opt/zotero/zotero.desktop ~/.local/share/applications/zotero.desktop
 ```
+
+## Log out and back in
+
+This might be an `xfce`/`xubuntu` quirk, but for the menu item to work I have to log out and log back in of my account.
+Once I've done this I can now open Zotero from the menu.
