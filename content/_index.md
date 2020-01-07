@@ -8,6 +8,7 @@ I have taught geography, GIS, and quantitative methods at undergraduate level an
 I've written several related [tutorials](tutorials/) and [blog posts](blog/) you can read, use, and share for free ([CC BY-NC](https://creativecommons.org/licenses/by-nc/4.0/)).
 My [stats101](https://philmikejones.github.io/stats101/) website might also be useful if you want an introduction to statistics (written with Python).
 
-I currently work on the "[Long-term impacts of 'Thatcherism': crime, politics and inequality](https://www.sheffield.ac.uk/law/research/projects/crimetrajectories)" project at the [University of Derby](https://www.derby.ac.uk/) in the [Department of Criminology and Social Sciences](https://www.derby.ac.uk/departments/criminology-social-sciences/).
+I am currently a lecturer in policing (research methods) at the [University of Derby](https://www.derby.ac.uk/) in the [Department of Criminology and Social Sciences](https://www.derby.ac.uk/departments/criminology-social-sciences/).
+Previously I worked on the "[Long-term impacts of 'Thatcherism': crime, politics and inequality](https://www.sheffield.ac.uk/law/research/projects/crimetrajectories)" project.
 
 [Read my bio >](bio/)
