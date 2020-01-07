@@ -91,3 +91,8 @@ Then you can create your symlink as described in the installation instructions:
 ```bash
 ln -s /opt/zotero/zotero.desktop ~/.local/share/applications/zotero.desktop
 ```
+
+## Log out and back in
+
+This might be an `xfce`/`xubuntu` quirk, but for the menu item to work I have to log out and log back in of my account.
+Once I've done this I can now open Zotero from the menu.
