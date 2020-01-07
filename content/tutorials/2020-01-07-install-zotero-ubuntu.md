@@ -6,7 +6,7 @@ categories: "tutorials"
 tags: ["zotero", "install", "ubuntu"]
 ---
 
-Instructions to install Zotero 5 in Ubuntu Bionic Beaver 19.04 LTS, as of January 2020.
+Instructions to install Zotero 5 in Ubuntu Bionic Beaver 18.04 LTS, as of January 2020.
 
 <!--more-->
 
@@ -40,7 +40,7 @@ sudo chown user:group /opt/zotero
 
 (where `user` is you and `group` is an optional group name (possibly `staff` or similar)).
 You may also want to change the [permissions](http://linuxcommand.org/lc3_lts0090.php) so that only you can write to this folder.
-For example, I want read, write, and execute permissions for myself (`7`), read permission (`5`) for group, and no permissions (`0`) (so others can read it but not write to it and bodge it up):
+For example, I want read, write, and execute permissions for myself (`7`), read permission (`5`) for group, and no permissions for everyone else (`0`) (so others can read it but not write to it and bodge it up):
 
 ```bash
 chmod 750 -R /opt/zotero
