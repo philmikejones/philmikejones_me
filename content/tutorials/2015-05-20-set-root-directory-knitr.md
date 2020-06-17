@@ -13,12 +13,10 @@ If you keep your data files and scripts in separate folders (and you should) you
 
 You cannot use `setwd()` with knitr, so the canonical way to do this is to include an initial code chunk:
 
-<pre>
 ```{r setup, include=FALSE, echo=FALSE}
 require("knitr")
 opts_knit$set(root.dir = "~/path/to/folder/")
 ```
-</pre>
 
 This creates an R chunk called `setup` which isn't included in the knitted file. 
 It loads the knitr package and sets `root.dir` to your project folder.
