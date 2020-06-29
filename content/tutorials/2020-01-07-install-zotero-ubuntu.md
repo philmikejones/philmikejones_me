@@ -53,10 +53,12 @@ The `-R` does this recusively (i.e. all files and directories in `/opt/zotero`).
 Copy the extracted files to `/opt/zotero` using:
 
 ```bash
-cp path/to/extracted/files/* /opt/zotero
+cp -r path/to/extracted/files/* /opt/zotero
 ```
 
 The `*` is a wildcard and means, "copy all files and directories in this directory".
+The `-r ` means copy recursively (i.e. copy all folders and folder contents).
+Thanks to Chris Erkal for the reminder.
 
 ## Create menu item
 
