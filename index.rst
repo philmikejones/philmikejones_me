@@ -10,6 +10,8 @@ Welcome to philmikejones's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+   bio
+
 
 
 Indices and tables
